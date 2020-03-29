@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8" />
+<title>404 Page not found</title>
+
+
+  
+
+
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="alternate" type="application/rss+xml" href="http://example.org/index.xml" title="Site Title">
+
+<link id="dark-mode" rel="stylesheet" href="http://example.org/css/dark-sys.css" />
+<link disabled id="dark-mode-theme" rel="stylesheet" href="http://example.org/css/dark.css" />
+<link rel="stylesheet" href="http://example.org/fontawesome/css/all.css" />
+<script src="http://example.org/js/bundle.js"></script>
+<meta name="generator" content="Hugo 0.68.3" />
+  </head>
+  <body>
+    
+  
+
+
+
+
+  <header>
+    <nav class="navbar">
+  <div class="nav">
+    
+
+    <ul class="nav-links">
+      
+    </ul>
+  </div>
+</nav>
+
+    <div class="intro-header">
+      <div class="container">
+        <div class="page-heading">
+          
+            <h1>404 Page not found</h1>
+          
+          
+        </div>
+      </div>
+    </div>
+  </header>
+
+
+    
+    <footer>
+  <div class="container">
+    <p class="credits copyright">
+      <a href="http://example.org/about"></a>
+      &nbsp;&copy;
+      0001
+
+      
+        &nbsp;/&nbsp;
+        <a href="http://example.org/">My New Hugo Site</a>
+      
+
+      &nbsp;&ndash;&nbsp;
+      <i class="fas fa-moon" id="dark-mode-toggle"></i>
+
+      <p class="credits theme-by">
+        Powered By <a href="https://gohugo.io">Hugo</a>&nbsp;Theme <a href="https://github.com/matsuyoshi30/harbor">Harbor</a>
+      </p>
+    </p>
+  </div>
+</footer>
+
+    <script>
+  var toggle = document.getElementById("dark-mode-toggle");
+  var darkTheme = document.getElementById("dark-mode-theme");
+
+  var darkThemeSys = document.getElementById("dark-mode");
+
+  
+  var savedTheme = localStorage.getItem("dark-mode-storage") || "light";
+  if (matchMedia('(prefers-color-scheme: dark)').matches) {
+    savedTheme = "dark"
+  }
+  setTheme(savedTheme);
+
+  toggle.addEventListener("click", () => {
+    if (toggle.className === "fas fa-moon") {
+        setTheme("dark");
+    } else if (toggle.className === "fas fa-sun") {
+        setTheme("light");
+    }
+  });
+
+  function setTheme(mode) {
+    localStorage.setItem("dark-mode-storage", mode);
+
+    if (mode === "dark") {
+        darkTheme.disabled = false;
+        darkThemeSys.disabled = false;
+        toggle.className = "fas fa-sun";
+    } else if (mode === "light") {
+        darkTheme.disabled = true;
+        darkThemeSys.disabled = true;
+        toggle.className = "fas fa-moon";
+    }
+  }
+</script>
+
+  </body>
+</html>
