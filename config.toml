@@ -1,6 +1,6 @@
 baseurl = "avillarreal.io"
-title = "Kiera"
-copyright = "Copyright &copy; 2019 - Author Name"
+title = "Alan Villarreal"
+copyright = "Copyright &copy; 2020 - Alan Villarreal"
 canonifyurls = true
 theme = "hugo-kiera"
 builddrafts = true
@@ -15,31 +15,27 @@ pygmentsCodeFences = true
 
 # Note: to disable a social network icon delete or comment out the corresponding line
 [author]
-    name = "Example"
+    name = "Alan Villarreal"
     github = "avreal"
     linkedin = "avreal31"
    # twitter = "ds_says"
 
 [params]
-    tagline = "A Hugo theme for creative and technical writing"
-    description = "Kiera: A Hugo theme for creative and technical writing."
+    tagline = "Writing on Various Network Engineering and Network Programmability Topics"
+    description = "Writing on Various Network Engineering and Network Programmability Topics"
     #images = [""] #This is used for opengraph/twitter cards.
-    customCSS = []  #Optional Customised CSS
+    customCSS = ["styles-light.css"]  #Optional Customised CSS
     #favicon = ""
     #utterancesRepo = "https://github.com/MyRepo"
     #utterancesIssueTerm = "pathname"
     #homepageLength = 10
 
-# uncomment to enable the Tags link on the main toolbar
-#  [[menu.main]]
-#    identifier = "tags"
-#    name = "Tags"
-#    url = "/tags"
+ #uncomment to enable the Tags link on the main toolbar
+
+# [[menu.main]]
+#    identifier = "about"
+#    name = "about"
+#    url = "/about/about"
 #    weight = 1
 
-# uncomment to enable the Categories link on the main toolbar
-#  [[menu.main]]
-#    identifier = "categories"
-#    name = "Categories"
-#    url = "/categories"
-#    weight = 1
+

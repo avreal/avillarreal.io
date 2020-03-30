@@ -1,13 +1,14 @@
 
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
  <channel>
-   <title>Tags on Alan Villarreal</title>
-   <link>avillarreal.io/tags/</link>
-   <description>Recent content in Tags on Alan Villarreal</description>
+   <title>Abouts on Alan Villarreal</title>
+   <link>avillarreal.io/about/</link>
+   <description>Recent content in Abouts on Alan Villarreal</description>
    <generator>Hugo -- gohugo.io</generator>
    <copyright>Copyright &amp;copy; 2020 - Alan Villarreal</copyright>
+   <lastBuildDate>Sun, 29 Mar 2020 17:58:28 -0700</lastBuildDate>
    
-       <atom:link href="avillarreal.io/tags/index.xml" rel="self" type="application/rss+xml" />
+       <atom:link href="avillarreal.io/about/index.xml" rel="self" type="application/rss+xml" />
    
    
      <item>
