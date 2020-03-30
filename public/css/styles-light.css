@@ -88,10 +88,11 @@ time {
   margin-left: 1em;
 }
 
+/*
 #container nav ul li a.active {
   border-bottom: 0.5em solid #666666;
 }
-
+*/
 #container main {
   flex: 1 0 0;
   line-height: 1.5;

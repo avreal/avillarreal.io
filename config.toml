@@ -7,7 +7,7 @@ builddrafts = true
 
 paginate = 3
 
-summaryLength = 30
+#summaryLength = 50
 enableEmoji = true
 pygmentsCodeFences = true
 
@@ -16,8 +16,8 @@ pygmentsCodeFences = true
 # Note: to disable a social network icon delete or comment out the corresponding line
 [author]
     name = "Alan Villarreal"
-    github = "avreal"
     linkedin = "avreal31"
+    github = "avreal"
    # twitter = "ds_says"
 
 [params]
