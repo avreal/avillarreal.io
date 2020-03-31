@@ -30,6 +30,11 @@ time {
   margin: 0 auto;
 }
 
+#container > header:nth-child(1) {
+  height: 100.033px;
+ }
+ 
+
 @media only screen and (max-width: 800px) {
   #container > * {
     width: auto;
