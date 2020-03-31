@@ -1,6 +1,11 @@
 {{ if not .Params.meta }}
 <section class="post-nav">
     <ul>
+        <l1>
+            <a href="{{ "/" }}"> <i class="fa fa-chevron-circle-left"> </i> Back</a>
+        </l1>
+        
+        <!--
         {{ with .PrevInSection }}
         <li>
             <a href="{{.Permalink}}"><i class="fa fa-chevron-circle-left"></i> {{ .Title }}</a>
@@ -10,7 +15,7 @@
         <li>
             <a href="{{.Permalink}}">{{ .Title }} <i class="fa fa-chevron-circle-right"></i> </a>
         </li>
-        {{ end }}
+        {{ end }}-->
     </ul>
 </section>
     {{ if .Site.Params.UtterancesRepo }}

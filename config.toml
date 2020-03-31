@@ -32,10 +32,10 @@ pygmentsCodeFences = true
 
  #uncomment to enable the Tags link on the main toolbar
 
-# [[menu.main]]
-#    identifier = "about"
-#    name = "about"
-#    url = "/about/about"
-#    weight = 1
+ [[menu.main]]
+    identifier = "About"
+    name = "About"
+    url = "/about"
+    weight = 1
 
 
