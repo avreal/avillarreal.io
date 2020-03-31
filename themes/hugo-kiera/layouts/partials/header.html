@@ -1,0 +1,46 @@
+<!doctype html>
+
+<html lang="{{ .Site.LanguageCode | default "en" }}">
+
+<head>
+  <title>{{ "Alan Villarreal - avillarreal.io" }}</title>
+  {{ partial "meta" . }}
+  {{  partial "header_includes" . }}
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous" />
+  <link rel="stylesheet" href="/fontawesome/css/all.min.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Slab|Ruda" />
+  <link rel="stylesheet" type="text/css" href="/css/styles-light.css" />
+</head>
+
+<body>
+  <div id="container">
+    <header>
+      <h1>
+                <a href="{{ relLangURL "/" }}">{{ .Site.Title | markdownify }}</a>
+            </h1>
+
+      <ul id="social-media">
+        {{- range .Site.Languages -}}
+          {{ if ne .LanguageName $.Site.Language.LanguageName }}
+            <li><a href="/{{ .Lang }}">{{ .LanguageName }}</a></li>
+          {{ end }}
+        {{- end -}}
+        {{- range .Site.Data.social.social_icons -}}
+          {{- if isset $.Site.Author .id }}
+             <li>
+               <a href="{{ printf .url (index $.Site.Author .id) }}" title="{{ .title }}">
+               <i class="{{ .icon }} fa-lg"></i>
+               </a>
+             </li>
+           {{- end -}}
+        {{ end }}
+      </ul>
+      {{ with .Site.Params.tagline }}
+      <p><em>{{ . | markdownify }}</em></p>
+      {{ end }}
+    </header>
+
+    {{ partial "nav" . }}
+
+    <main>
