@@ -1,6 +1,6 @@
 {{if isset .Params "images" }}
 <div class="featured_image">
-    <a href="/posts/{{  .Params.urltitle }}"> title="{{ .Title }}">
+    <a href="/posts/{{  .Params.urltitle }}" title="{{ .Title }}">
         <img src="{{ index .Params.images 0 }}">
     </a>
 </div>

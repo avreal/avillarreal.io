@@ -21,8 +21,8 @@ pygmentsCodeFences = true
    # twitter = "ds_says"
 
 [params]
-    tagline = "Writing on Various Network Engineering and Network Programmability Topics"
-    description = "Writing on Various Network Engineering and Network Programmability Topics"
+    tagline = "some blurb about Writing on Various Network Engineering and Network Programmability Topics"
+    description = "some blurb about Network Engineering and Network Programmability Topics"
     #images = [""] #This is used for opengraph/twitter cards.
     #customCSS = ["styles-light.css"]  #Optional Customised CSS
     #favicon = ""
