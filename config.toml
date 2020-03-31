@@ -21,8 +21,8 @@ pygmentsCodeFences = true
    # twitter = "ds_says"
 
 [params]
-    tagline = "some blurb about Writing on Various Network Engineering and Network Programmability Topics"
-    description = "some blurb about Network Engineering and Network Programmability Topics"
+    tagline = "Writing on Various Network Engineering and Network Programmability Topics"
+    description = "Writing on Various Network Engineering and Network Programmability Topics"
     #images = [""] #This is used for opengraph/twitter cards.
     #customCSS = ["styles-light.css"]  #Optional Customised CSS
     #favicon = ""
@@ -33,9 +33,17 @@ pygmentsCodeFences = true
  #uncomment to enable the Tags link on the main toolbar
 
  [[menu.main]]
-    identifier = "About"
-    name = "About"
+    identifier = "ABOUT"
+    name = "ABOUT"
     url = "/about"
     weight = 1
+    urlname = "about"
+
+ [[menu.main]]
+    identifier = "POSTS"
+    name = "POSTS"
+    url = "/posts"
+    weight = 1
+    urlname = "posts"
 
 

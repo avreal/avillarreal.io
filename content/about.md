@@ -2,6 +2,7 @@
 title: "About"
 #date: false
 showdate: false
+urltitle: "about"
 #draft: true
 ---
 
