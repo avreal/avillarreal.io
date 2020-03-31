@@ -1,7 +1,7 @@
 baseurl = "avillarreal.io"
 title = "Alan Villarreal"
 copyright = "Copyright &copy; 2020 - Alan Villarreal"
-canonifyurls = true
+canonifyurls = false
 theme = "hugo-kiera"
 builddrafts = true
 
