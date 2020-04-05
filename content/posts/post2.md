@@ -13,4 +13,4 @@ JUST SOME PLACEHOLDER TEXT JUST SOME PLACEHOLDER TEXT JUST SOME PLACEHOLDER TEXT
 
 also testing how an image looks using inline markdown using a link to my s3 bucket
 
-![wowacat](/images/cat.jpeg
+![wowacat](/images/cat.jpeg)
