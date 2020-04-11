@@ -17,7 +17,7 @@
 <meta name="twitter:title" content="Alan Villarreal"/>
 <meta name="twitter:description" content="Writing on Various Network Engineering and Network Programmability Topics"/>
 
-<meta name="generator" content="Hugo 0.68.3" />
+<meta name="generator" content="Hugo 0.69.0" />
     
  
 
@@ -109,7 +109,7 @@
     </li>
     
     <li >
-      <h1><a href="/posts/ospfareatypes" title="OSPF Stub Area Types">OSPF Stub Area Types</a></h1>
+      <h1><a href="/posts/ospfareatypes" title="OSPF Stub Area Types Part 1: Stub and Totally Stubby">OSPF Stub Area Types Part 1: Stub and Totally Stubby</a></h1>
       <aside>
     <ul>
         <li>
@@ -127,7 +127,7 @@
 
       
 
-      <p><p>asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf asdfasbdf</p></p>
+      <p><p>For up and coming network engineers and those studying for their CCNA and CCNP, OSPF can be quite a daunting routing protocol. It&rsquo;s metric is much simpler than EIGRP, being just a function of reference bandwitdh vs link bandwidth. However the inner workings of OSPF can be much more complex, with its link state database filled with LSAs of various types across multiple areas that give routers a whole map of the toplogy on which they run Djikstra&rsquo;s shortest path algorithm to build a routing table. To add to this, there are various configurations that allow for certain LSA types to be filtered at different points in the network. The focus of this post will be those area types (called stub areas) that give network engineers more granular control over the size of their router&rsquo;s link state databases, which in turn eases resource consumption. This post was inspired by Narbik Kocharian&rsquo;s <a href="https://www.youtube.com/watch?v=cM3OI_ZyRuQ"><strong>video</strong></a> on the subject, which was instrumental for me in terms of really understanding the concepts and use case of these stub areas while studying for my CCNP. I will demonstrate OSPF Stub Areas using a GNS3 lab and observing the changes in the routing tables, Link State Databases, as well as using packet caputures.</p></p>
         
       <a href="/posts/ospfareatypes">Read more…</a>
       
