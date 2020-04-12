@@ -148,11 +148,12 @@ time {
 }
 
 #container main article > pre {
-  background-color: #ffffcc;
+  background-color: #0f0f00;
   overflow-x: auto;
   padding: 0.8em;
   font-size: 0.9em;
   box-shadow: 0 -1px 0 #bbbbbb inset;
+  color: ivory
 }
 
 #container main article .highlight pre {

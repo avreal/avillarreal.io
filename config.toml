@@ -3,7 +3,7 @@ title = "Alan Villarreal"
 copyright = "Copyright &copy; 2020 - Alan Villarreal"
 canonifyurls = false
 theme = "hugo-kiera"
-builddrafts = true
+builddrafts = false
 
 paginate = 3
 
@@ -11,7 +11,7 @@ paginate = 3
 enableEmoji = true
 pygmentsCodeFences = true
 
-#disqusShortname = "myShortName"
+disqusShortname = "avillarrealio"
 
 # Note: to disable a social network icon delete or comment out the corresponding line
 [author]
