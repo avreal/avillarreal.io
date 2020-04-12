@@ -3,11 +3,22 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
-    <loc>avillarreal.io/about/</loc>
+    <loc>avillarreal.io/</loc>
+    <lastmod>2020-03-28T20:15:03-07:00</lastmod>
   </url>
   
   <url>
-    <loc>avillarreal.io/</loc>
+    <loc>avillarreal.io/posts/ospfareatypes/</loc>
+    <lastmod>2020-03-28T20:15:03-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>avillarreal.io/posts/</loc>
+    <lastmod>2020-03-28T20:15:03-07:00</lastmod>
+  </url>
+  
+  <url>
+    <loc>avillarreal.io/about/</loc>
   </url>
   
   <url>

@@ -7,14 +7,14 @@
   <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="description" content="Writing on Various Network Engineering and Network Programmability Topics" />
-<meta name="author" content="Alan Villarreal" /><link rel="alternate" type="application/rss+xml+xml" href="avillarreal.io/index.xml" title="Alan Villarreal" /><meta property="og:title" content="Alan Villarreal" />
+<meta name="author" content="Alan Villarreal" /><link rel="alternate" type="application/rss+xml+xml" href="avillarreal.io/posts/index.xml" title="Alan Villarreal" /><meta property="og:title" content="Posts" />
 <meta property="og:description" content="Writing on Various Network Engineering and Network Programmability Topics" />
 <meta property="og:type" content="website" />
-<meta property="og:url" content="avillarreal.io/" />
+<meta property="og:url" content="avillarreal.io/posts/" />
 <meta property="og:updated_time" content="2020-03-28T20:15:03-07:00" />
 
 <meta name="twitter:card" content="summary"/>
-<meta name="twitter:title" content="Alan Villarreal"/>
+<meta name="twitter:title" content="Posts"/>
 <meta name="twitter:description" content="Writing on Various Network Engineering and Network Programmability Topics"/>
 
 <meta name="generator" content="Hugo 0.69.0" />
@@ -78,38 +78,33 @@
 
 
 
-<section id="home">
-  <ul>
+<section id="list">
+
     
+        <h2>Posts</h2>
     
+
     
-    <li class="first" >
-      <h1><a href="/posts/ospfareatypes" title="OSPF Stub Area Types Part 1: Stub and Totally Stubby">OSPF Stub Area Types Part 1: Stub and Totally Stubby</a></h1>
-      <aside>
+
+    
+
+    <h3>2020</h3>
     <ul>
+        
         <li>
-            
-            <time class="post-date" datetime="2020-03-28T20:15:03-07:00">Mar 28, 2020</time>
-            
+            <a href="avillarreal.io/posts/ospfareatypes/">OSPF Stub Area Types Part 1: Stub and Totally Stubby</a>
+            <time class="date-meta">Mar 28</time>
         </li>
         
-
-        
-
-        
     </ul>
-</aside>
 
-      
-
-      <p><p>For up and coming network engineers and those studying for their CCNA and CCNP, OSPF can be quite a daunting routing protocol. It&rsquo;s metric is much simpler than EIGRP, being just a function of reference bandwitdh vs link bandwidth. However the inner workings of OSPF can be much more complex, with its link state database (for every area) filled with LSAs of various types, and Djikstra&rsquo;s algorithm running under the hood to determine shortest paths. To add to this, there are various configurations that allow for certain LSA types to be filtered at different points in the network. The focus of this post will be those area types (called stub areas) that give network engineers more granular control over the size of their router&rsquo;s link state databases, which in turn eases resource consumption. This post was inspired by Narbik Kocharian&rsquo;s <a href="https://www.youtube.com/watch?v=cM3OI_ZyRuQ"><strong>video</strong></a> on the subject, which was instrumental for me in really understanding the concepts and use cases of these stub areas while studying for my CCNP. I will demonstrate OSPF Stub Areas using a GNS3 lab and observing the changes in the routing tables, Link State Databases, as well as using packet caputures.</p></p>
-        
-      <a href="/posts/ospfareatypes">Read more…</a>
-      
-    </li>
     
-  </ul>
+
 </section>
+
+
+
+
 
 
 
