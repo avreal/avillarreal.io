@@ -8,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="description" content="Writing on Various Network Engineering and Network Programmability Topics" />
 <meta name="author" content="Alan Villarreal" /><meta property="og:title" content="OSPF Stub Area Types Part 1: Stub and Totally Stubby" />
-<meta property="og:description" content="For up and coming network engineers and those studying for their CCNA and CCNP, OSPF can be quite a daunting routing protocol. It&rsquo;s metric is much simpler than EIGRP, being just a function of reference bandwitdh vs link bandwidth. However the inner workings of OSPF can be much more complex, with its link state database (for every area) filled with LSAs of various types, and Djikstra&rsquo;s algorithm running under the hood to determine shortest paths. To add to this, there are various configurations that allow for certain LSA types to be filtered at different points in the network. The focus of this post will be those area types (called stub areas) that give network engineers more granular control over the size of their router&rsquo;s link state databases, which in turn eases resource consumption. This post was inspired by Narbik Kocharian&rsquo;s video on the subject, which was instrumental for me in really understanding the concepts and use cases of these stub areas while studying for my CCNP. I will demonstrate OSPF Stub Areas using a GNS3 lab and observing the changes in the routing tables, Link State Databases, as well as using packet caputures." />
+<meta property="og:description" content="For up and coming network engineers and those studying for their CCNA and CCNP, OSPF can be quite a daunting routing protocol. It&rsquo;s metric is much simpler than EIGRP, but the inner workings can be much more complex, with its link state database (for every area) filled with LSAs of various types, and Djikstra&rsquo;s algorithm running under the hood to determine shortest paths. Adding to this, there are various configurations that allow for certain LSA types to be filtered at different points in the network and numerous other features. The focus of this post will be those area types (called stub areas) that give network engineers more granular control of the size of their router&rsquo;s link state databases, which in turn eases resource consumption. I am assuming some familiarity with LSA types and basic OSPF concepts so I will not go over that in this discussion, however the effects of stub areas should be clear even without knowing LSAs. This post was inspired by Narbik Kocharians&rsquo; video on the subject, which was instrumental for me in really understanding the concepts and use cases of these stub areas while studying for my CCNP ROUTE. I will demonstrate OSPF Stub Areas using a GNS3 lab and observing the changes in the routing tables/link state databases." />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="avillarreal.io/posts/ospfareatypes/" />
 <meta property="article:published_time" content="2020-03-28T20:15:03-07:00" />
@@ -16,7 +16,7 @@
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="OSPF Stub Area Types Part 1: Stub and Totally Stubby"/>
-<meta name="twitter:description" content="For up and coming network engineers and those studying for their CCNA and CCNP, OSPF can be quite a daunting routing protocol. It&rsquo;s metric is much simpler than EIGRP, being just a function of reference bandwitdh vs link bandwidth. However the inner workings of OSPF can be much more complex, with its link state database (for every area) filled with LSAs of various types, and Djikstra&rsquo;s algorithm running under the hood to determine shortest paths. To add to this, there are various configurations that allow for certain LSA types to be filtered at different points in the network. The focus of this post will be those area types (called stub areas) that give network engineers more granular control over the size of their router&rsquo;s link state databases, which in turn eases resource consumption. This post was inspired by Narbik Kocharian&rsquo;s video on the subject, which was instrumental for me in really understanding the concepts and use cases of these stub areas while studying for my CCNP. I will demonstrate OSPF Stub Areas using a GNS3 lab and observing the changes in the routing tables, Link State Databases, as well as using packet caputures."/>
+<meta name="twitter:description" content="For up and coming network engineers and those studying for their CCNA and CCNP, OSPF can be quite a daunting routing protocol. It&rsquo;s metric is much simpler than EIGRP, but the inner workings can be much more complex, with its link state database (for every area) filled with LSAs of various types, and Djikstra&rsquo;s algorithm running under the hood to determine shortest paths. Adding to this, there are various configurations that allow for certain LSA types to be filtered at different points in the network and numerous other features. The focus of this post will be those area types (called stub areas) that give network engineers more granular control of the size of their router&rsquo;s link state databases, which in turn eases resource consumption. I am assuming some familiarity with LSA types and basic OSPF concepts so I will not go over that in this discussion, however the effects of stub areas should be clear even without knowing LSAs. This post was inspired by Narbik Kocharians&rsquo; video on the subject, which was instrumental for me in really understanding the concepts and use cases of these stub areas while studying for my CCNP ROUTE. I will demonstrate OSPF Stub Areas using a GNS3 lab and observing the changes in the routing tables/link state databases."/>
 
 <meta name="generator" content="Hugo 0.69.0" />
     
@@ -32,31 +32,30 @@
 
 <body>
   <div id="container">
-    <header>
+    <header style="height: 55px;">
       <h1>
-                <a href="/">Alan Villarreal</a>
+                <a href="/"> Browser#sh avillarreal.io</a>
             </h1>
 
       <ul id="social-media">
-             <li>
-               <a href="https://github.com/avreal" title="GitHub">
-               <i class="fab fa-github fa-lg"></i>
-               </a>
-             </li>
-             <li>
-               <a href="https://linkedin.com/in/avreal31" title="LinkedIn">
-               <i class="fab fa-linkedin fa-lg"></i>
-               </a>
-             </li>
       </ul>
-      
-      <p><em>Writing on Various Network Engineering and Network Programmability Topics</em></p>
       
     </header>
 
     
 <nav style="padding-top: 10px;">
     <ul>
+        <li>
+            <a class="" href="https://www.linkedin.com/in/avreal31">
+                <i class="fa-li fa fa-lg"></i><span>LINKEDIN</span>
+            </a>
+        </li>
+
+        <li>
+            <a class="" href="https://github.com/avreal">
+                <i class="fa-li fa fa-lg"></i><span>GITHUB</span>
+            </a>
+        </li>
         
         <li>
             <a class="" href="/about">
@@ -104,18 +103,19 @@
     
 
 
-    <p>For up and coming network engineers and those studying for their CCNA and CCNP, OSPF can be quite a daunting routing protocol. It&rsquo;s metric is much simpler than EIGRP, being just a function of reference bandwitdh vs link bandwidth. However the inner workings of OSPF can be much more complex, with its link state database (for every area) filled with LSAs of various types, and Djikstra&rsquo;s algorithm running under the hood to determine shortest paths. To add to this, there are various configurations that allow for certain LSA types to be filtered at different points in the network. The focus of this post will be those area types (called stub areas) that give network engineers more granular control over the size of their router&rsquo;s link state databases, which in turn eases resource consumption. This post was inspired by Narbik Kocharian&rsquo;s <a href="https://www.youtube.com/watch?v=cM3OI_ZyRuQ"><strong>video</strong></a> on the subject, which was instrumental for me in really understanding the concepts and use cases of these stub areas while studying for my CCNP. I will demonstrate OSPF Stub Areas using a GNS3 lab and observing the changes in the routing tables, Link State Databases, as well as using packet caputures.</p>
-<p>Before getting into OSPF discussion, we must first examine the lab environment. This lab is built in GNS3 using IOU L3 images (i86bi-linux-l3-adventerprisek9-15.4.1T.bin). The full topology is as follows:</p>
-<p><img src="/images/topology.png" alt="topology"></p>
+    <p>For up and coming network engineers and those studying for their CCNA and CCNP, OSPF can be quite a daunting routing protocol. It&rsquo;s metric is much simpler than EIGRP, but the inner workings can be much more complex, with its link state database (for every area) filled with LSAs of various types, and Djikstra&rsquo;s algorithm running under the hood to determine shortest paths. Adding to this, there are various configurations that allow for certain LSA types to be filtered at different points in the network and numerous other features. The focus of this post will be those area types (called stub areas) that give network engineers more granular control of the size of their router&rsquo;s link state databases, which in turn eases resource consumption. I am assuming some familiarity with LSA types and basic OSPF concepts so I will not go over that in this discussion, however the effects of stub areas should be clear even without knowing LSAs. This post was inspired by Narbik Kocharians&rsquo; <a href="https://www.youtube.com/watch?v=cM3OI_ZyRuQ"><strong>video</strong></a> on the subject, which was instrumental for me in really understanding the concepts and use cases of these stub areas while studying for my CCNP ROUTE. I will demonstrate OSPF Stub Areas using a GNS3 lab and observing the changes in the routing tables/link state databases.</p>
+<p>Before getting into OSPF discussion, we must first examine the lab environment. This lab is built in GNS3 2.2.3 using IOU L3 images (i86bi-linux-l3-adventerprisek9-15.4.1T.bin). The full topology is as follows (click <a href="/1resources/images/ospfstub1/topology.PNG"><strong>here</strong></a> for full size):</p>
+<p><img src="/1resources/images/ospfstub1/topology.PNG" alt="topology"></p>
 <p>A couple of notes about the topology:</p>
 <ol>
-<li>For the purposes of this lab, the individual physical interface IP addresses do not matter, we are mostly concerned with the loopbacks configured on the routers named AreaX as well as the ASBRs (the ABRs can be ignored, I will discuss why we needed multiple routers when I discuss stub areas and redistribution).</li>
+<li>For the purposes of this lab, the individual physical interface IP addresses do not matter, we are mostly concerned with the loopbacks configured on the routers named AreaX as well as the ASBRs.</li>
 <li>x = {1,5} = {1,2,3,4,5}, so each of these routers with this notation has 5 loopbacks configured</li>
 <li>The routers called AreaX are used to simulate an internal network in the specified area consisting of several routers participating in OSPF.</li>
-<li>No static default routing is configured anywhere</li>
+<li>No static routing is configured.</li>
+<li>I have created a gns3 portable project, that can be downloaded <a href="/1resources/misc/ospfstub1/OSPFStubArea.gns3project"><strong>here</strong></a>.</li>
 </ol>
 <h2 id="initial-state">Initial State</h2>
-<p>Let us first look at the initial state of the router called AREA1. As we can see the LSDB is rather large (click <a href="/textfiles/post1/area1lsdb.txt"><strong>here</strong></a> to see the full output). For this post in particular we are interested in the Type 3,4, and 5 LSAs. Note that the ouput that I am pasting here is omitting all the transit links on the network, as we are looking only at the loopbacks configured as described above. That means the LSDB is even larger than what I am showing here (14 extra type 3 LSAs)! The LSDB for Areas 1 and 2 are going to be almost exactly the same, except area 1 is going to have type 3 LSAs for area 2 and vice versa.</p>
+<p>Let us first look at the initial state of the router called AREA1. As we can see the LSDB is rather large (click <a href="/1resources/textfiles/ospfstub1/area1lsdb.txt"><strong>here</strong></a> to see the full output). For this post in particular we are interested in the Type 3,4, and 5 LSAs. Note that the output that I am pasting here is omitting LSAs from the physical links on the network, as we are looking only at the loopbacks configured as described above. That means the LSDB is even larger than what I am showing here (14 extra type 3 LSAs)! The LSDB for Areas 1 and 2 are going to be almost exactly the same, except area 1 is going to have type 3 LSAs for area 2 and vice versa. (In fact the initial LSDB for all of the AREAx routers will be similar)</p>
 <h3 id="area-1-type-3-lsa">Area 1 Type 3 LSA</h3>
 <pre><code>                 Summary Net Link States (Area 1)
 
@@ -140,6 +140,11 @@ Link ID         ADV Router      Age         Seq#       Checksum
 5.5.5.3         192.168.100.1   17          0x80000004 0x001723
 5.5.5.4         192.168.100.1   17          0x80000004 0x000D2C
 5.5.5.5         192.168.100.1   17          0x80000004 0x000335
+10.10.10.1      192.168.100.1   18          0x80000009 0x00082A
+10.10.10.2      192.168.100.1   18          0x80000009 0x00FD33
+10.10.10.3      192.168.100.1   18          0x80000009 0x00F33C
+10.10.10.4      192.168.100.1   18          0x80000009 0x00E945
+10.10.10.5      192.168.100.1   18          0x80000009 0x00DF4E
 
 </code></pre><h3 id="area-1-type-4-lsa">Area 1 Type 4 LSA</h3>
 <pre><code>                Summary ASB Link States (Area 1)
@@ -175,7 +180,7 @@ Link ID         ADV Router      Age         Seq#       Checksum Tag
 55.55.55.4      55.55.55.5      1411        0x80000002 0x00AE9C 0
 55.55.55.5      55.55.55.5      1411        0x80000002 0x00A4A5 0
 
-</code></pre><h3 id="and-now-we-can-look-at-the-routing-table-no-default-routing-is-set">And now we can look at the routing table, NO DEFAULT ROUTING IS SET:</h3>
+</code></pre><h3 id="and-now-we-can-look-at-the-routing-table-recall-no-static-routing-is-configured">And now we can look at the routing table, Recall NO static routing is configured:</h3>
 <h3 id="inter-area-routes">Inter Area Routes</h3>
 <pre><code>AREA1#sh ip route ospf | include O IA
 O IA     2.2.2.1 [110/41] via 192.168.100.1, 00:04:19, Ethernet0/0
@@ -227,23 +232,25 @@ O E2     55.55.55.4 [110/20] via 192.168.100.1, 00:05:35, Ethernet0/0
 O E2     55.55.55.5 [110/20] via 192.168.100.1, 00:05:35, Ethernet0/0
 
 </code></pre><h2 id="stub-configuration">Stub Configuration</h2>
-<p>Now suppose that we wish to decrease the size of the database and the routing table, as our poor old router is starting to struggle with the overhead of running OSPF. We still want specific routes to the destinations within other areas, but we do not care about specific routes to the EIGRP domain. This can be accomplished by using a stub area.</p>
-<p>Configuration is quite simple, we just configure</p>
-<pre><code>area 1 stub
-</code></pre><p>on all routers in area 1. When we do this on AREA1ABR but not AREA1 the OSPF adjaceny goes down. This is because the routers must agree no whether they will allow external routing to form the adjacency. Lets look at the OSPF hello packet once this is done.</p>
-<p>Here is the hello packet from the router that does NOT have &lsquo;area 1 stub&rsquo; configured:</p>
-<p><img src="/images/ospfstub1/nostubpcap.png" alt="nostub"></p>
-<p>Now the packet from the rotuer that does have &lsquo;area 1 stub&rsquo; configured:</p>
-<p><img src="/images/ospfstub1/stubpcap" alt="stub1"></p>
+<p>Suppose we want to decrease the size of the routing table by eliminating specific routes to external destinations, as the devices in this area do not care about how they reach them and only have 1 exit point anyway. We still want specific routes to the destinations within other areas in OSPF, but we do not care about specific routes to the EIGRP domain. This can be accomplished by using a stub area.</p>
+<p>Configuration is quite simple, we just do</p>
+<pre><code>(config-router)#area 1 stub
+</code></pre><p>on all routers in area 1. When we do this on the AREA1ABR router first but not AREA1 the OSPF adjacency goes down. This is because the routers must agree on whether they will allow external routing to form the adjacency. Lets look at the OSPF hello packet once this is done.</p>
+<p>Here is a piece of the hello packet from the router that does NOT have &lsquo;area 1 stub&rsquo; configured:</p>
+<p><img src="/1resources/images/ospfstub1/nostubpcap.PNG" alt="nostub"></p>
+<p>Now the packet from the router that does have &lsquo;area 1 stub&rsquo; configured:</p>
+<p><img src="/1resources/images/ospfstub1/stubpcap.PNG" alt="stub1"></p>
 <p>Note the difference in the E bit. Once I set &lsquo;area 1 stub&rsquo; on the AREA1 router the adjacency forms again and we can observe what has changed.</p>
 <pre><code>AREA1#sh ip ospf database external
 
             OSPF Router with ID (1.1.1.5) (Process ID 1)
+
+AREA1#
 </code></pre><pre><code>AREA1#sh ip route ospf | include O E2
 AREA1#
 </code></pre><p>What happened to the external routes and type 4/5 LSAs? Can we still reach those external networks?</p>
 <p>The answer is YES, but how is this accomplished?</p>
-<p>When we configured area 1 as a stub, we are essentially putting the effort of routing to external destinations solely on the ABR. This is accomplished with a special type 3 LSA propogated throughuot the network. Let us take a look at the type 3 LSAs in the database:</p>
+<p>When we configure area 1 as a stub, we are essentially putting the effort of routing to external destinations from this area solely on the ABR. This is accomplished with a special type 3 LSA propagated throughout the area. Let us take a look at the type 3 LSAs in the database:</p>
 <pre><code>                Summary Net Link States (Area 1)
 
 Link ID         ADV Router      Age         Seq#       Checksum
@@ -268,7 +275,7 @@ Link ID         ADV Router      Age         Seq#       Checksum
 5.5.5.3         192.168.100.1   28          0x80000007 0x002F0A
 5.5.5.4         192.168.100.1   28          0x80000007 0x002513
 5.5.5.5         192.168.100.1   28          0x80000007 0x001B1C
-</code></pre><p>Looks identical to the intial state except for the first entry, what is this 0.0.0.0 LSA telling us? We can take a closer look:</p>
+</code></pre><p>Looks identical to the initial state except for the first entry, what is this 0.0.0.0 LSA telling us? We can take a closer look:</p>
 <pre><code>AREA1#sh ip ospf database summary
 
             OSPF Router with ID (1.1.1.5) (Process ID 1)
@@ -292,11 +299,11 @@ Link ID         ADV Router      Age         Seq#       Checksum
 Gateway of last resort is 192.168.100.1 to network 0.0.0.0
 
 O*IA  0.0.0.0/0 [110/11] via 192.168.100.1, 00:03:09, Ethernet0/0
-</code></pre><p>The AREA1ABR router has created and flooded a type 3 LSA specifying a default route to all external destinations through itself. We were able to cut the routing table and LSDB of non ABR area 1 routers in half with 2 configuration lines!</p>
-<p>To summarize, in a stub area type 4 and 5 LSAs will not be propogated by the ABR. Instead the ABR will generate a type 3 LSA specifying a default route and propogate that. Now all of the non ABR routers in area 1 will have a single default route to external networks that travels through the ABR.</p>
+</code></pre><p>The AREA1ABR router has created and flooded a type 3 LSA which results in the creation a default route to all external destinations through itself. We were able to cut the routing table and LSDB of non ABR area 1 routers in half with 2 configuration lines!</p>
+<p>To summarize, in a stub area type 4 and 5 LSAs will not be propagated by the ABR. Instead the ABR will generate a type 3 LSA specifying a default route and propagate that. Now all of the non ABR routers in area 1 will have a single default route to external networks that travels through the ABR.</p>
 <h2 id="totally-stubby-configuration">Totally Stubby Configuration</h2>
-<p>Now suppose we want to minimize the LSDB and routing table as much as we possibly can, without having to manage static routes. OSPF gives us a method of not only stopping type 4/5 LSAS, but also limiting the propogation of type 3 LSAs. This is be called a <strong>Totally Stubby Area</strong></p>
-<p>Let us hop over to area 2 for this demonstration. The LSDB is going to be nearly identical to the initial state I showed above, except IA routes to 2.2.2.2 instead are to 1.1.1.1 (in area 1).</p>
+<p>Now suppose that we wish to decrease the size of the database and the routing table even further, as our poor old router is starting to struggle with the overhead of running OSPF, but we don&rsquo;t want to manage static routes. OSPF gives us a method of not only stopping type 4/5 LSAS, but also limiting the propagation of type 3 LSAs. This is called a Totally Stubby Area.</p>
+<p>Lets hop over to area 2 for this demonstration. The LSDB is going to be nearly identical to the initial state I showed above, except IA routes to 2.2.2.2 instead are to 1.1.1.1 (in area 1).</p>
 <p>The configuration is quite similar, except on the ABR we add &lsquo;no-summary&rsquo; (as in no summary LSA, you can see where this is going) to the command.</p>
 <pre><code>AREA2ABR(config-router)#area 2 stub no-summary
 </code></pre><p>and on the regular AREA2 router (and all other routers if they were there) we configure</p>
@@ -342,7 +349,9 @@ Link ID         ADV Router      Age         Seq#       Checksum
         MTID: 0         Metric: 1
 AREA2#
 
-</code></pre><p>in fact the only type 3 LSA being flooded which directs all area 2 routers to send all traffic not otherwise specified towards the ABR. Now compare the LSDB after configuring area 2 as totally stubby to the <a href="/textfiles/post1/area2lsdb.txt"><strong>initial LSDB of area 2</strong></a> and we have drastically reduced the OSPF overhead on the routers within area 2.</p>
+</code></pre><p>in fact this is the only type 3 LSA being flooded into the area, which results in a route that directs all area 2 routers to send all traffic not otherwise specified towards the ABR. Now compare the LSDB after configuring area 2 as totally stubby to the <a href="/1resources/textfiles/ospfstub1/area2lsdb.txt"><strong>initial LSDB of area 2</strong></a> and we have drastically reduced the OSPF overhead on the routers within area 2.</p>
+<p>At this point I hope this has cleared up stub areas and totally stubby areas, however the configuration above should raise some questions. For example, what if we wanted to configure an area with an ASBR as a stub? What if we wish to redistribute directly into a stub but not allow external routes from other areas? In my next post I will discuss the extension to the classic stubby areas, known as Not So Stubby Areas (seriously).</p>
+<p>If you have any questions about the content of this post, don&rsquo;t hesitate to <a href="mailto:villarreal.alan.aav@gmail.com"><strong>email</strong></a> me or leave a comment in the disqus section below!</p>
 
 </article>
 
@@ -419,7 +428,9 @@ AREA2#
 
 </main>
     <footer>
-        <h6>Copyright © 2020 - Alan Villarreal </h6>
+        <h6>Copyright © 2020 - Alan Villarreal 
+            , Feel free to <a href="mailto:villarreal.alan.aav@gmail.com" target="_top">Email</a> with any questions, comments, or feedback!
+        </h6>  
     </footer>
 </div>
 <script src="/avillarreal.io/js/scripts.js"></script>

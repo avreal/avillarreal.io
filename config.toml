@@ -16,12 +16,12 @@ disqusShortname = "avillarrealio"
 # Note: to disable a social network icon delete or comment out the corresponding line
 [author]
     name = "Alan Villarreal"
-    linkedin = "avreal31"
-    github = "avreal"
+   # linkedin = "avreal31"
+   # github = "avreal"
    # twitter = "ds_says"
 
 [params]
-    tagline = "Writing on Various Network Engineering and Network Programmability Topics"
+    #tagline = "Writing on Various Network Engineering and Network Programmability Topics"
     description = "Writing on Various Network Engineering and Network Programmability Topics"
     #images = [""] #This is used for opengraph/twitter cards.
     #customCSS = ["styles-light.css"]  #Optional Customised CSS
@@ -33,17 +33,19 @@ disqusShortname = "avillarrealio"
  #uncomment to enable the Tags link on the main toolbar
 
  [[menu.main]]
-    identifier = "ABOUT"
-    name = "ABOUT"
-    url = "/about"
-    weight = 1
-    urlname = "about"
-
- [[menu.main]]
     identifier = "POSTS"
     name = "POSTS"
     url = "/posts"
     weight = 1
     urlname = "posts"
+    
+ [[menu.main]]
+   identifier = "ABOUT"
+    name = "ABOUT"
+    url = "/about"
+    weight = 1
+    urlname = "about"
+
+
 
 

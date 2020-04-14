@@ -4,6 +4,7 @@ body {
   overflow-x: hidden;
   font-family: "Roboto Slab", serif;
   color: #333333;
+  background: floralwhite;
 }
 
 h1,
@@ -26,7 +27,7 @@ time {
 }
 
 #container > * {
-  width: 800px;
+  width: 900px;
   margin: 0 auto;
 }
 
@@ -38,11 +39,11 @@ time {
 }
 
 #container header {
-  margin-bottom: -.5em;
+  margin-bottom: .5em;
 }
 
 #container header h1 {
-  font-size: 2.4rem;
+  font-size: 2.5rem;
 }
 
 #container header h1 a {
@@ -426,4 +427,8 @@ ul.pagination {
 
 ul.pagination li {
   padding: 0 1em;
+}
+
+strong {
+  color: midnightblue;
 }

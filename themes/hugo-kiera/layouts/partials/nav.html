@@ -1,6 +1,17 @@
 {{ $currentPage := . }}
 <nav style="padding-top: 10px;">
     <ul>
+        <li>
+            <a class="" href="https://www.linkedin.com/in/avreal31">
+                <i class="fa-li fa fa-lg"></i><span>LINKEDIN</span>
+            </a>
+        </li>
+
+        <li>
+            <a class="" href="https://github.com/avreal">
+                <i class="fa-li fa fa-lg"></i><span>GITHUB</span>
+            </a>
+        </li>
         {{ range .Site.Menus.main }}
         <li>
             <a class="{{if or ($currentPage.IsMenuCurrent "main" .) ($currentPage.HasMenuCurrent "main" .) }}active{{end}}" href="/{{lower .Name}}">

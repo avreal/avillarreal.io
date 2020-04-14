@@ -31,31 +31,30 @@
 
 <body>
   <div id="container">
-    <header>
+    <header style="height: 55px;">
       <h1>
-                <a href="/">Alan Villarreal</a>
+                <a href="/"> Browser#sh avillarreal.io</a>
             </h1>
 
       <ul id="social-media">
-             <li>
-               <a href="https://github.com/avreal" title="GitHub">
-               <i class="fab fa-github fa-lg"></i>
-               </a>
-             </li>
-             <li>
-               <a href="https://linkedin.com/in/avreal31" title="LinkedIn">
-               <i class="fab fa-linkedin fa-lg"></i>
-               </a>
-             </li>
       </ul>
-      
-      <p><em>Writing on Various Network Engineering and Network Programmability Topics</em></p>
       
     </header>
 
     
 <nav style="padding-top: 10px;">
     <ul>
+        <li>
+            <a class="" href="https://www.linkedin.com/in/avreal31">
+                <i class="fa-li fa fa-lg"></i><span>LINKEDIN</span>
+            </a>
+        </li>
+
+        <li>
+            <a class="" href="https://github.com/avreal">
+                <i class="fa-li fa fa-lg"></i><span>GITHUB</span>
+            </a>
+        </li>
         
         <li>
             <a class="" href="/about">
@@ -102,7 +101,7 @@
 
       
 
-      <p><p>For up and coming network engineers and those studying for their CCNA and CCNP, OSPF can be quite a daunting routing protocol. It&rsquo;s metric is much simpler than EIGRP, being just a function of reference bandwitdh vs link bandwidth. However the inner workings of OSPF can be much more complex, with its link state database (for every area) filled with LSAs of various types, and Djikstra&rsquo;s algorithm running under the hood to determine shortest paths. To add to this, there are various configurations that allow for certain LSA types to be filtered at different points in the network. The focus of this post will be those area types (called stub areas) that give network engineers more granular control over the size of their router&rsquo;s link state databases, which in turn eases resource consumption. This post was inspired by Narbik Kocharian&rsquo;s <a href="https://www.youtube.com/watch?v=cM3OI_ZyRuQ"><strong>video</strong></a> on the subject, which was instrumental for me in really understanding the concepts and use cases of these stub areas while studying for my CCNP. I will demonstrate OSPF Stub Areas using a GNS3 lab and observing the changes in the routing tables, Link State Databases, as well as using packet caputures.</p></p>
+      <p><p>For up and coming network engineers and those studying for their CCNA and CCNP, OSPF can be quite a daunting routing protocol. It&rsquo;s metric is much simpler than EIGRP, but the inner workings can be much more complex, with its link state database (for every area) filled with LSAs of various types, and Djikstra&rsquo;s algorithm running under the hood to determine shortest paths. Adding to this, there are various configurations that allow for certain LSA types to be filtered at different points in the network and numerous other features. The focus of this post will be those area types (called stub areas) that give network engineers more granular control of the size of their router&rsquo;s link state databases, which in turn eases resource consumption. I am assuming some familiarity with LSA types and basic OSPF concepts so I will not go over that in this discussion, however the effects of stub areas should be clear even without knowing LSAs. This post was inspired by Narbik Kocharians&rsquo; <a href="https://www.youtube.com/watch?v=cM3OI_ZyRuQ"><strong>video</strong></a> on the subject, which was instrumental for me in really understanding the concepts and use cases of these stub areas while studying for my CCNP ROUTE. I will demonstrate OSPF Stub Areas using a GNS3 lab and observing the changes in the routing tables/link state databases.</p></p>
         
       <a href="/posts/ospfareatypes">Read more…</a>
       
@@ -115,7 +114,9 @@
 
 </main>
     <footer>
-        <h6>Copyright © 2020 - Alan Villarreal </h6>
+        <h6>Copyright © 2020 - Alan Villarreal 
+            , Feel free to <a href="mailto:villarreal.alan.aav@gmail.com" target="_top">Email</a> with any questions, comments, or feedback!
+        </h6>  
     </footer>
 </div>
 <script src="/avillarreal.io/js/scripts.js"></script>
