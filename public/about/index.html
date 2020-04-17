@@ -106,7 +106,7 @@ I&rsquo;m a network deployment engineer with Netsurion primarily working on Fort
 <p>I&rsquo;m a network deployment engineer with <a href="https://www.netsurion.com"><strong>Netsurion</strong></a> primarily working on Fortinet gear and SD-WAN Firewalls. As all of you in networking know, we are never done learning in this field. I earned my CCNP in Routing and Switching in January of 2020 and am currently investing time in learning practical network programmability as well as starting on the AWS Solutions Architect Associate certification. In fact the idea for creating this site came about as I was studying for the SAA. The site is hosted using several AWS services (S3, Cloudfront, Route53, ACM). I&rsquo;ve always had an interest in teaching and hope I can contribute in some small way to the cisco community and those getting started on their certification journey.</p>
 <p>You can reach me on <a href="https://www.linkedin.com/in/avreal31"><strong>linkedin</strong></a>, or send me an email at villarreal.alan.aav at gmail.com with any feedback or content you would like to see!</p>
 <p>Here&rsquo;s my cat Gizmo</p>
-<p><img src="/1resources/images/gizmo.jpg" alt="gimo"></p>
+<p><div id = "gimo"><img src="/1resources/images/gizmo.jpg" alt="gimo"></p></div>
 
 
 </article>
@@ -121,67 +121,6 @@ I&rsquo;m a network deployment engineer with Netsurion primarily working on Fort
         
     </ul>
 </section>
-    
-    
-        <section class="comments-block">
-      <button id="show-comments" style="display: none;"><i class="fa fa-comments"></i> </button>
-</section>
-
-<section id="disqus_thread"></section>
-
-<script>
-      (function () {
-            
-            
-            if (window.location.hostname == "localhost")
-                  return;
-
-            var disqus_loaded = false;
-            var disqus_shortname = 'avillarrealio';
-            var disqus_button = document.getElementById("show-comments");
-
-            disqus_button.style.display = "";
-            disqus_button.addEventListener("click", disqus, false);
-
-            function disqus() {
-
-                  if (!disqus_loaded) {
-                        disqus_loaded = true;
-
-                        var e = document.createElement("script");
-                        e.type = "text/javascript";
-                        e.async = true;
-                        e.src = "//" + disqus_shortname + ".disqus.com/embed.js";
-                        (document.getElementsByTagName("head")[0] ||
-                              document.getElementsByTagName("body")[0])
-                        .appendChild(e);
-
-                        
-                        document.getElementById("show-comments").style.display = "none";
-                  }
-            }
-
-            
-            var hash = window.location.hash.substr(1);
-            if (hash.length > 8) {
-                  if (hash.substring(0, 8) == "comment-") {
-                        disqus();
-                  }
-            }
-
-            
-            if (/bot|google|baidu|bing|msn|duckduckgo|slurp|yandex/i.test(navigator.userAgent)) {
-                  disqus();
-            }
-      })();
-</script>
-
-    
-
-
-
-
-
 </main>
     <footer>
         <h6>Copyright © 2020 - Alan Villarreal 
