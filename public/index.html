@@ -11,7 +11,7 @@
 <meta property="og:description" content="Writing on Various Network Engineering and Network Programmability Topics" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="avillarreal.io/" />
-<meta property="og:updated_time" content="2020-03-28T20:15:03-07:00" />
+<meta property="og:updated_time" content="2020-03-31T11:06:53-07:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Alan Villarreal"/>
@@ -83,6 +83,31 @@
     
     
     <li class="first" >
+      <h1><a href="/posts/ospfareatypes2" title="OSPF Stub Area Types Part 2: Not So Stubby Areas">OSPF Stub Area Types Part 2: Not So Stubby Areas</a></h1>
+      <aside>
+    <ul>
+        <li>
+            
+            <time class="post-date" datetime="2020-03-31T11:06:53-07:00">Mar 31, 2020</time>
+            
+        </li>
+        
+
+        
+
+        
+    </ul>
+</aside>
+
+      
+
+      <p><p>The previous post left off with questions about redistribution into OSPF areas which are also classified as stub areas. Recall that stub areas filter type 4 and 5 LSAs, while totally stubby areas filter type 3,4, and 5. So what happens if we we wish to redistribute into a stubby area but keep other external routes out, or redistribute and have access to the entire network but with a minimally sized routing table and LSDB? In this post I will spin up the <a href="/1resources/images/ospfstub1/topology.PNG"><strong>lab</strong></a> (gns3 project download <a href="/1resources/misc/ospfstub1/OSPFStubArea.gns3project"><strong>here</strong></a>) from the previous post and demonstrate what are called Not So Stubby Areas, as well as various subconfigurations of NSSAs.</p></p>
+        
+      <a href="/posts/ospfareatypes2">Read more…</a>
+      
+    </li>
+    
+    <li >
       <h1><a href="/posts/ospfareatypes" title="OSPF Stub Area Types Part 1: Stub and Totally Stubby">OSPF Stub Area Types Part 1: Stub and Totally Stubby</a></h1>
       <aside>
     <ul>
@@ -101,7 +126,7 @@
 
       
 
-      <p><p>For up and coming network engineers and those studying for their CCNA and CCNP, OSPF can be quite a daunting routing protocol. It&rsquo;s metric is much simpler than EIGRP, but the inner workings can be much more complex, with its link state database (for every area) filled with LSAs of various types, and Dijkstra&rsquo;s algorithm running under the hood to determine shortest paths. Adding to this, there are various configurations that allow for certain LSA types to be filtered at different points in the network and numerous other features. The focus of this post will be those area types (called stub areas) that give network engineers more granular control of the size of their router&rsquo;s link state databases, which in turn eases resource consumption. I am assuming some familiarity with LSA types and basic OSPF concepts so I will not go over that in this discussion, however the effects of stub areas should be clear even without knowing LSAs. This post was inspired by Narbik Kocharians&rsquo; <a href="https://www.youtube.com/watch?v=cM3OI_ZyRuQ"><strong>video</strong></a> on the subject, which was instrumental for me in really understanding the concepts and use cases of these stub areas while studying for my CCNP ROUTE. I will demonstrate OSPF Stub Areas using a GNS3 lab and observing the changes in the routing tables/link state databases.</p></p>
+      <p><p>For up and coming network engineers and those studying for their CCNA and CCNP, OSPF can be quite a daunting routing protocol. It&rsquo;s metric is much simpler than EIGRP, but the inner workings can be much more complex. Think LSAs, LSDBs, Dijkstra&rsquo;s algorithm, etc. Adding to this, there are various configurations that allow for certain LSA types to be filtered at different points in the network and numerous other features. The focus of this post will be those area types (called stub areas) that give network engineers more granular control of the size of their router&rsquo;s link state databases, which in turn eases resource consumption. I am assuming some familiarity with LSA types and basic OSPF concepts so I will not go over that in this discussion, however the effects of stub areas should be clear even without knowing LSAs. This post was inspired by Narbik Kocharians&rsquo; <a href="https://www.youtube.com/watch?v=cM3OI_ZyRuQ"><strong>video</strong></a> on the subject, which was instrumental for me in really understanding the concepts and use cases of these stub areas while studying for my CCNP ROUTE. I will demonstrate OSPF Stub Areas using a GNS3 lab and observing the changes in the routing tables/link state databases. I highly encourage everyone to follow along and lab this as well!</p></p>
         
       <a href="/posts/ospfareatypes">Read more…</a>
       
