@@ -5,6 +5,8 @@ canonifyurls = false
 theme = "hugo-kiera"
 builddrafts = false
 
+ignoreFiles = ["about.md"]
+
 paginate = 3
 
 #summaryLength = 50
