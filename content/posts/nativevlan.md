@@ -8,7 +8,7 @@ showdate: true
 
 When learning about VLANs and layer 2 segmentation, we are always told that the purpose of VLANs is to separate broadcast domains, and traffic from one VLAN can not go to the other VLAN unless specifically allowed. However there are situations in which traffic from one VLAN can leak across to another VLAN which is a massive security risk. In this post I will show an example of VLAN hopping in the case of a native VLAN mismatch, and discuss the native VLAN in general. Note that this is geared more towards Cisco IOS, as other vendors may not implement the native VLAN in their switches. <!--more--> 
 
-Before getting into it, lets first look into our lab setup. Click [__here__](/1resources/images/nativevlan/nativevlanlab.PNG) for full size.
+Before getting into it, lets first look into our lab setup. Click [__here__](/1resources/images/nativevlan/nativevlan.PNG) for full size.
 
 ![nativevlanlab](/1resources/images/nativevlan/nativevlan.PNG)
 
