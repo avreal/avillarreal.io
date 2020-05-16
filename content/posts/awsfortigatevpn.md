@@ -23,7 +23,7 @@ showdate: true
 12. Show that private subnet can't ping out unless a route is given to it
 --->
 
-Part of the curriculum for the AWS Solutions Architect Associate Exam includes a brief look at the VPC and its features but it is by no means a comprehensive overview of networking in AWS. As someone who primarily works in the networking field, I wanted to get my hands a bit dirty with the network capabilities in AWS. In this post I'll go over the process of setting up a site to site VPN between my home FortiGate firewall and a FortiGate EC2 instance with a public/private subnet VPC setup. This lab simulates a connection between an on prem network and an AWS infrastructure. I was pleasantly surprised at how intuitive this was given I only have experience with on prem to on prem deployments.
+Part of the curriculum for the AWS Solutions Architect Associate Exam includes a brief look at the VPC and its features, but is by no means a comprehensive overview of networking in AWS. As someone who works in the networking field and has spent a lot of time labbing at home, I wanted to get my hands a bit dirty with AWS networking. In this post I'll go over the process of setting up a site to site VPN between my home FortiGate firewall and a FortiGate EC2 instance with a public/private subnet VPC setup, with the intent of simulating a connection between an on prem network and an AWS infrastructure. I was pleasantly surprised at how intuitive this was given I only have experience with non cloud fortigates, and had a ton of fun setting this up! If you have a FortiGate sitting around and are willing to spend a few cents on EC2, follow along!
   <!--more--> 
 
 First lets look at the whole network setup (click [__here__](/1resources/images/awsvpn/AWS-Fortigate.PNG) for full size):
@@ -313,8 +313,13 @@ rtt min/avg/max/mdev = 11.688/11.772/11.850/0.066 ms
 [ec2-user@ip-10-0-100-100 ~]$
 ~~~
 
-![logging](/1resources/images/awsvpn/logginginternet.PNG)
+Here we see traffic leaving the private subnet and going out to the internet in the port2->port1 policy.
 
+![logginginternet](/1resources/images/awsvpn/logginginternet.PNG)
+
+## Wrapping Up
+
+As we have seen, setting up a VPN directly with a FortiGate EC2 instance is a simple way of establishing a secure channel between an on prem and a cloud network. This is just one of many ways to accomplish this task, and a skilled cloud architect/network engineer should be able to take all of the parameters and come up with a solution that best meets an organizations network and security needs. In the future I will be experimenting with other methods of connecting my own "on prem" network with my AWS cloud, and perhaps explore those options in later posts. As usual, if you have any questions about the content of this post, don't hesitate to [__email__](mailto:villarreal.alan.aav@gmail.com) me or leave a comment in the disqus section below!
 
 
 
