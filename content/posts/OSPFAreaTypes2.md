@@ -2,11 +2,11 @@
 title: "OSPF Stub Area Types Part 2: Not So Stubby Areas"
 urltitle: "ospfareatypes2"
 date: 2020-03-31T11:06:53-07:00
-draft: false
+draft: true
 showdate: true
 ---
 
-The previous post left off with questions about redistribution into OSPF areas which are also classified as stub areas. Recall that stub areas filter type 4 and 5 LSAs, while totally stubby areas filter type 3,4, and 5. So what happens if we we wish to redistribute into a stubby area but keep other external routes out, or redistribute and have access to the entire network but with a minimally sized routing table and LSDB? In this post I will spin up the [__lab__](/1resources/images/ospfstub1/topology.PNG) (gns3 project download [__here__](/1resources/misc/ospfstub1/OSPFStubArea.gns3project)) from the previous post and demonstrate what are called Not So Stubby Areas, as well as various subconfigurations of NSSAs. <!--more--> 
+The previous post left off with questions about redistribution into OSPF areas which are also classified as stub areas. Recall that stub areas filter type 4 and 5 LSAs, while totally stubby areas filter type 3,4, and 5. So what happens if we wish to redistribute into a stubby area but keep other external routes out, or redistribute and have access to the entire network but with a minimally sized routing table and LSDB? In this post I will spin up the [__lab__](/1resources/images/ospfstub1/topology.PNG) (gns3 project download [__here__](/1resources/misc/ospfstub1/OSPFStubArea.gns3project)) from the previous post and demonstrate what are called Not So Stubby Areas, as well as various subconfigurations of NSSAs. <!--more--> 
 
 ### Redistribution into Stub Areas
 
