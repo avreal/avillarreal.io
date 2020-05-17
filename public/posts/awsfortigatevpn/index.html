@@ -10,7 +10,7 @@
 <meta name="author" content="Alan Villarreal - avillarreal.io" /><meta property="og:title" content="AWS/On-Prem Fortigate Site to Site VPN" />
 <meta property="og:description" content="
 
-Part of the curriculum for the AWS Solutions Architect Associate Exam includes a brief look at the VPC and its features, but is by no means a comprehensive overview of networking in AWS. As someone who works in the networking field and has spent a lot of time labbing at home, I wanted to get my hands a bit dirty with AWS networking. In this post I&rsquo;ll go over the process of setting up a site to site VPN between my home FortiGate firewall and a FortiGate EC2 instance with a public/private subnet VPC setup, with the intent of simulating a connection between an on prem network and an AWS infrastructure. I was pleasantly surprised at how intuitive this was given I only have experience with non cloud fortigates, and had a ton of fun setting this up! If you have a FortiGate sitting around and are willing to spend a few cents on EC2, follow along!" />
+Part of the curriculum for the AWS Solutions Architect Associate Exam includes a brief look at the VPC and its features, but it is by no means a comprehensive overview of networking in AWS. As someone who works in the networking field and has spent significant personal time labbing, I wanted to get my hands dirty with AWS networking. In this post I&rsquo;ll go over the process of setting up a site to site VPN between my home FortiGate firewall and a FortiGate EC2 instance with a public/private subnet VPC setup, with the intent of simulating a connection between an on prem network and an AWS infrastructure. I was pleasantly surprised at how intuitive this was, given that I only have experience with non cloud FortiGates, and had a ton of fun setting this up. If you have a FortiGate sitting around and are willing to spend a few cents on EC2, follow along!" />
 <meta property="og:type" content="article" />
 <meta property="og:url" content="avillarreal.io/posts/awsfortigatevpn/" />
 <meta property="article:published_time" content="2020-05-09T10:39:51-07:00" />
@@ -20,7 +20,7 @@ Part of the curriculum for the AWS Solutions Architect Associate Exam includes a
 <meta name="twitter:title" content="AWS/On-Prem Fortigate Site to Site VPN"/>
 <meta name="twitter:description" content="
 
-Part of the curriculum for the AWS Solutions Architect Associate Exam includes a brief look at the VPC and its features, but is by no means a comprehensive overview of networking in AWS. As someone who works in the networking field and has spent a lot of time labbing at home, I wanted to get my hands a bit dirty with AWS networking. In this post I&rsquo;ll go over the process of setting up a site to site VPN between my home FortiGate firewall and a FortiGate EC2 instance with a public/private subnet VPC setup, with the intent of simulating a connection between an on prem network and an AWS infrastructure. I was pleasantly surprised at how intuitive this was given I only have experience with non cloud fortigates, and had a ton of fun setting this up! If you have a FortiGate sitting around and are willing to spend a few cents on EC2, follow along!"/>
+Part of the curriculum for the AWS Solutions Architect Associate Exam includes a brief look at the VPC and its features, but it is by no means a comprehensive overview of networking in AWS. As someone who works in the networking field and has spent significant personal time labbing, I wanted to get my hands dirty with AWS networking. In this post I&rsquo;ll go over the process of setting up a site to site VPN between my home FortiGate firewall and a FortiGate EC2 instance with a public/private subnet VPC setup, with the intent of simulating a connection between an on prem network and an AWS infrastructure. I was pleasantly surprised at how intuitive this was, given that I only have experience with non cloud FortiGates, and had a ton of fun setting this up. If you have a FortiGate sitting around and are willing to spend a few cents on EC2, follow along!"/>
 
 <meta name="generator" content="Hugo 0.70.0" />
     
@@ -109,19 +109,19 @@ Part of the curriculum for the AWS Solutions Architect Associate Exam includes a
 
     <!-- raw HTML omitted -->
 <!-- raw HTML omitted -->
-<p>Part of the curriculum for the AWS Solutions Architect Associate Exam includes a brief look at the VPC and its features, but is by no means a comprehensive overview of networking in AWS. As someone who works in the networking field and has spent a lot of time labbing at home, I wanted to get my hands a bit dirty with AWS networking. In this post I&rsquo;ll go over the process of setting up a site to site VPN between my home FortiGate firewall and a FortiGate EC2 instance with a public/private subnet VPC setup, with the intent of simulating a connection between an on prem network and an AWS infrastructure. I was pleasantly surprised at how intuitive this was given I only have experience with non cloud fortigates, and had a ton of fun setting this up! If you have a FortiGate sitting around and are willing to spend a few cents on EC2, follow along!</p>
-<p>First lets look at the whole network setup (click <a href="/1resources/images/awsvpn/AWS-Fortigate.PNG"><strong>here</strong></a> for full size):</p>
-<p><img src="/1resources/images/awsvpn/AWS-Fortigate.PNG" alt="diagram"></p>
+<p>Part of the curriculum for the AWS Solutions Architect Associate Exam includes a brief look at the VPC and its features, but it is by no means a comprehensive overview of networking in AWS. As someone who works in the networking field and has spent significant personal time labbing, I wanted to get my hands dirty with AWS networking. In this post I&rsquo;ll go over the process of setting up a site to site VPN between my home FortiGate firewall and a FortiGate EC2 instance with a public/private subnet VPC setup, with the intent of simulating a connection between an on prem network and an AWS infrastructure. I was pleasantly surprised at how intuitive this was, given that I only have experience with non cloud FortiGates, and had a ton of fun setting this up. If you have a FortiGate sitting around and are willing to spend a few cents on EC2, follow along!</p>
+<p>First, let&rsquo;s look at the whole network setup: (click <a href="/1resources/images/awsvpn/AWS-Fortigate.png"><strong>here</strong></a> for full size):</p>
+<p><img src="/1resources/images/awsvpn/AWS-Fortigate.png" alt="diagram"></p>
 <p>Quick Summary:</p>
-<p>On the AWS side we have a private subnet, which will have no access to the outside world. This will host EC2 instances that we can suppose are running some critical backend for an application. The private subnet is connected via an ENI to the FortiGate instance, then another ENI on the instance connects to the public subnet. The public subnet is also connected to an internet gateway for WAN access. My home router is NOT bridged, so I will be using NAT traversal on the VPN and have set up my fortigate as a DMZ host in my ISP router settings. The purpose of this VPN configuration is to allow a host on my &ldquo;on prem&rdquo; network to securely access the private subnet in my VPC. <strong>NOTE THAT I AM ASSUMING SOME FAMILIARITY WITH AWS AND FORTIGATE SO I WONT SHOW EVERY SINGLE STEP!!</strong> Now onto the step by step!</p>
+<p>On the AWS side we have a private subnet which will have no access to the outside world. This subnet will host EC2 instances that we can suppose are running some critical backend for an application. The private subnet is connected via an ENI to the FortiGate instance, then another ENI on the instance connects to the public subnet. The public subnet is also connected to an internet gateway for WAN access. My home router is NOT bridged, so I will be using NAT traversal on the VPN, and have set up my fortigate as a DMZ host in my ISP router settings. The purpose of this VPN configuration is to allow a host on my &ldquo;on prem&rdquo; network to securely access the private subnet in my VPC. <strong>NOTE: I AM ASSUMING SOME FAMILIARITY WITH AWS AND FORTIGATE SO I WON&rsquo;T SHOW EVERY SINGLE STEP!!</strong> Now, onto the step by step!</p>
 <h2 id="creating-a-new-vpc">Creating A New VPC</h2>
 <p>For the purpose of this lab, we will create a new VPC.</p>
 <p><img src="/1resources/images/awsvpn/createvpc.PNG" alt="createvpc"></p>
-<p>Nothing fancy here, just using a different private IPv4 address space than our default VPC. From this point on I will use the &ldquo;filter by VPC&rdquo; option on the sidebar so I only make changes to my new VPC.</p>
+<p>Nothing fancy here, just using a different private IPv4 address space than our default VPC. From this point on I will use the &ldquo;filter by VPC&rdquo; option on the sidebar so I only make changes pertaining to my new VPC.</p>
 <h2 id="creating-publicprivate-subnets-internet-gateway-and-routing">Creating Public/Private Subnets, Internet Gateway, and Routing</h2>
-<p>For this simple architecture, I will use 10.0.1.0/24 as the internal IP for my public subnet and 10.0.100.0/24 for the private. This is what the subnet creation screen looks like (there is an error because I already created this subnet in my VPC before writing this post). Also for the private subnet, we want to make sure that the &ldquo;Auto-assign public IPv4&rdquo; option is not selected:</p>
-<p><img src="/1resources/images/awsvpn/createsubnet.PNG" alt="createsubnet"></p>
-<p>Now that we have our subnets, I have created an internet gateway to allow access to the internet from the public subnet. This is super simple, just a matter of naming the gateway and attaching it to the VPC so I am not showing it here. Once the internet gateway is attached, we can start building our route tables. Any route tables we create will automatically include a local route which allows access to other devices within the VPC. I took the default route table in the VPC and renamed it &ldquo;PublicSubnet&rdquo;. I then added a default route pointing to my internet gateway. Here is what that looks like:</p>
+<p>For this simple architecture, I will use 10.0.1.0/24 as the internal IP for my public subnet and 10.0.100.0/24 for the private subnet. This following screenshot shows what the subnet creation screen looks like (Note: the error displayed is because I had already created this subnet in my VPC before writing this post). Also, for the private subnet, we want to make sure that the &ldquo;Auto-assign public IPv4&rdquo; option is not selected.</p>
+<p><img src="/1resources/images/awsvpn/createsubnet.png" alt="createsubnet"></p>
+<p>Now that we have our subnets, I created an internet gateway to allow access to the internet from the public subnet. This is super simple - it&rsquo;s just a matter of naming the gateway and attaching it to the VPC so I am not showing it here. Once the internet gateway is attached, we can start building our route tables. Any route tables we create will automatically include a local route which allows access to other devices within the VPC. I took the default route table in the VPC and renamed it &ldquo;PublicSubnet&rdquo;. I then added a default route pointing to my internet gateway. Here is what that looks like:</p>
 <p><img src="/1resources/images/awsvpn/publicroute.PNG" alt="publicroute"></p>
 <p>Then I create a second route table for my private subnet that looks like this:</p>
 <p><img src="/1resources/images/awsvpn/privroute.PNG" alt="privroute"></p>
@@ -131,41 +131,41 @@ Part of the curriculum for the AWS Solutions Architect Associate Exam includes a
 <p><img src="/1resources/images/awsvpn/privsubassoc.PNG" alt="privsubassoc"></p>
 <p>Public:</p>
 <p><img src="/1resources/images/awsvpn/pubsubassoc.PNG" alt="pubsubassoc"></p>
-<p>Note that I have 2 of each public/private subnets for availability reasons but this lab will just explore using one subnet in the VPN.</p>
-<p>So now we have our 2 subnets, one that only has local access and one with access to the outside world. Now we can spin up a fortigate in our VPC and get it connected to our subnets!</p>
+<p>Note that I have 2 of each public/private subnets for availability reasons, but this lab will just explore using one subnet in the VPN.</p>
+<p>So now we have our 2 subnets - one that only has local access and one that has access to the outside world. Time to spin up a fortigate in our VPC and get it connected to our subnets!</p>
 <h2 id="fortigate-ec2-instance">FortiGate EC2 Instance</h2>
-<p>The process for setting up the Fortigate EC2 instance is not much different than setting up a regular free tier t2.micro instance. We must go to the AWS Marketplace and subscribe for access to the FortiGate AMI (click <a href="https://aws.amazon.com/marketplace/pp/Fortinet-Inc-Fortinet-FortiGate-Next-Generation-Fi/B00PCZSWDA"><strong>here</strong></a> to access the marketplace page). As of the time this post is being written (05/2020), Fortinet is offering a 30 day free trial for their FortiGate platform. Note that &ldquo;free&rdquo; here means that the AMI/software itself is free, but you will still be charged the standard price by AWS for the type of instance you use. In my case I am using the smallest possible instance for FortiGate which is a t2.small that runs $0.023 an hour. There are alot of options in the EC2 creation process, but for this lab we only need to configure the following:</p>
+<p>The process for setting up the Fortigate EC2 instance is not much different than setting up a regular free tier t2.micro instance. We must go to the AWS Marketplace and subscribe for access to the FortiGate AMI (click <a href="https://aws.amazon.com/marketplace/pp/Fortinet-Inc-Fortinet-FortiGate-Next-Generation-Fi/B00PCZSWDA"><strong>here</strong></a> to access the marketplace page). At the time this post was written (May 2020), Fortinet was offering a 30 day free trial for their FortiGate platform. Note that &ldquo;free&rdquo; here means that the AMI/software itself is free, but you will still be charged the standard price by AWS for the type of instance you use. In my case I am using the smallest possible instance for FortiGate which is a t2.small that runs $0.023 an hour. There are a lot of options in the EC2 creation process, but for this lab we only need to configure the following:</p>
 <ol>
 <li>Select our lab VPC</li>
 <li>Set PublicSubnet as the subnet</li>
-<li>The internal IP can be automatically chosen but I have used a static IP of 10.0.1.254 (in the public subnet) as it is personal preference. (see image below showing 1,2 and 3)</li>
-<li>Use a security group that is wide open for inbound and outbound access (this is not best practice but we can worry about hardening the network later). This security group will also be used later for our private instances.</li>
+<li>The internal IP can be automatically chosen but I have used a static IP of 10.0.1.254 as it is personal preference. (see image below showing 1,2, and 3)</li>
+<li>Use a security group that is wide open for inbound and outbound access (this is not considered best practice but we can worry about hardening the network later). This security group will also be used later for our private instances.</li>
 </ol>
 <p><img src="/1resources/images/awsvpn/instancenetwork.PNG" alt="instancenetwork"></p>
-<p>Now that this is done we have a t2.small FortiGate EC2 instance spinning up. As you know, our EC2 instance will have a public IP that will allow us to reach it over the internet. Since I have all of my elastic IPs available, I will allocate and then associate an elastic IP with my instance so the IP doesn&rsquo;t change and bring my VPN down. This looks like this:</p>
+<p>Now that this is done, we have a t2.small FortiGate EC2 instance spinning up. As you know, our EC2 instance will have a public IP that will allow us to reach it over the internet. Since I have all of my elastic IPs available, I will allocate and then associate an elastic IP with my instance so the IP doesn&rsquo;t change and bring my VPN down.</p>
 <p><img src="/1resources/images/awsvpn/elasticip.PNG" alt="elasticip"></p>
 <p>Now when I go to https://3.133.25.16 I am greeted with a login screen for my EC2 FortiGate firewall. Following the instructions in the &ldquo;Usage Instructions&rdquo; tab, you can log in and then change the password to your liking. Looking at network -&gt; interfaces we see that port 1 has the IP I assigned during the instance creation.</p>
 <p><img src="/1resources/images/awsvpn/fortigateint1.PNG" alt="fortigateint1"></p>
-<p>However at this point the private subnet is not connected to the FortiGate. To do this we will create a new Elastic Network Interface (ENI) and attach it to our instance. This is done in the EC2 sidebar by clicking on Network Interfaces then &lsquo;Create Network Interface&rsquo;. I will use the following settings:</p>
+<p>However, at this point the private subnet is not connected to the FortiGate. To do this we will create a new Elastic Network Interface (ENI) and attach it to our instance. This is done in the EC2 sidebar by clicking on Network Interfaces, then on &lsquo;Create Network Interface&rsquo;. I will use the following settings:</p>
 <p><img src="/1resources/images/awsvpn/newinterface.PNG" alt="newinterface"></p>
-<p>Once this is done we can go back to our instance, right click and select Networking -&gt; Attach Network Interface, then select the interface that was just created. Now we can go back to our FortiGate and we see that port2 is now there but does not have an IP address. We must go into the port settings and set it for DHCP (so that it pulls the IP we set up in the ENI). After doing that we see the following:</p>
+<p>Once this is done, we can go back to our instance and right click and select Networking -&gt; Attach Network Interface. Then, we select the interface that was just created. Now we can go back to our FortiGate and see that port2 is now there, but does not have an IP address. We must go into the port settings and set it for DHCP (so that it pulls the IP we set up in the ENI). After doing that we see the following:</p>
 <p><img src="/1resources/images/awsvpn/fortigateinterfaces.PNG" alt="fortigateint1"></p>
 <p>Now port1 is connected to our public subnet, and port2 is connected to our private.</p>
 <h2 id="ec2-instances-on-private-subnet">EC2 Instances On Private Subnet</h2>
-<p>Now that the fortigate is staged for our VPN setup, I will spin up two t2.micro Amazon Linux EC2 instances (free tier!) in the private subnet at 10.0.100.100 and 10.0.100.101, these will be the devices I will try to hit over the VPN. This step should be quite simple so I ill just say that we must configure them to be in the private network and specify the IP as shown here:</p>
-<p><img src="/1resources/images/awsvpn/ec2network.PNG" alt="ec2network"></p>
-<p>I will configure them with the same wide open security group the FortiGate is using. Because these are private instances with no internet access, I actually have no way of getting into them to take a look unless I add routes to give them access. This is ok as once the VPN is up, we can SSH into them from the on prem network.</p>
+<p>Now that the fortigate is staged for our VPN setup, I will spin up two t2.micro Amazon Linux EC2 instances (free tier!) in the private subnet at 10.0.100.100 and 10.0.100.101, these will be the devices I will try to hit over the VPN. This step should be quite simple so I will just say that we must configure them to be in the private network and specify the IP as shown here:</p>
+<p><img src="/1resources/images/awsvpn/ec2network.png" alt="ec2network"></p>
+<p>I will configure them with the same wide open security group the FortiGate is using, and all other settings will be default. Because these are private instances with no internet access, I actually have no way of getting into them to take a look unless I add routes to give them outbound access. This is ok as once the VPN is up, we can SSH into them from the on prem network.</p>
 <h2 id="site-to-site-vpn-configuration-aws">Site to Site VPN Configuration (AWS)</h2>
-<p>Now that the EC2 ForiGate is ready to go, we can start the site to site VPN configuration. This lab makes use of a route based VPN, so we will need to following:</p>
+<p>Now that the EC2 FortiGate is ready to go, we can start the site to site VPN configuration. This lab makes use of a route based VPN, so we will need the following:</p>
 <ol>
 <li>Phase 1 Config</li>
 <li>Phase 2 Config</li>
 <li>Firewall Policy</li>
 <li>Static Routes</li>
 </ol>
-<p>The VPN is built on the public subnet as it is allowed to go out to the public internet, we can then use routing to control the traffic flow from the private subnet out over the VPN.</p>
+<p>The VPN is built on the public subnet as it must be allowed to go out to the public internet - we can then use routing to control the traffic flow from the private subnet out over the VPN.</p>
 <h3 id="aws-fortigate-vpn-config">AWS Fortigate VPN Config</h3>
-<p>The Phase 1 and Phase 2 looks as follows (click <a href="/1resources/images/awsvpn/awsfortigateVPNconfig.PNG"><strong>here</strong></a> for GUI):</p>
+<p>The Phase 1 and Phase 2 looks like this (click <a href="/1resources/images/awsvpn/awsfortigateVPNconfig.png"><strong>here</strong></a> for GUI config):</p>
 <pre><code>config vpn ipsec phase1-interface
     edit &quot;AlanVPN&quot;
         set interface &quot;port1&quot;
@@ -186,12 +186,12 @@ config vpn ipsec phase2-interface
         set dst-subnet 192.168.100.0 255.255.255.0
     next
 end
-</code></pre><p>Next we configure policies for the VPN in/out:</p>
+</code></pre><p>Next, we configure policies for the VPN in/out:</p>
 <p><img src="/1resources/images/awsvpn/fortigateawspolicy.PNG" alt="fortigateawspolicy"></p>
-<p>Then configure a static route for access to the network on my home FortiGate:</p>
+<p>Then, we configure a static route for access to the network on my home FortiGate:</p>
 <p><img src="/1resources/images/awsvpn/fortigateawsroute.PNG" alt="fortigateawsroute"></p>
 <h3 id="local-fortigate-vpn-config">Local Fortigate VPN Config</h3>
-<p>Now I must configure the vpn on my home firewall in a similar fashion. The Phase 1 and Phase 2 looks as follows (click <a href="/1resources/images/awsvpn/localfortigateVPNconfig.PNG"><strong>here</strong></a> for GUI):</p>
+<p>Now we must configure the VPN on our home firewall in a similar fashion. The Phase 1 and Phase 2 looks like this (click <a href="/1resources/images/awsvpn/localfortigateVPNconfig.png"><strong>here</strong></a> for GUI config):</p>
 <pre><code>config vpn ipsec phase1-interface
     edit &quot;AlanVPN&quot;
         set interface &quot;wan1&quot;
@@ -212,11 +212,11 @@ config vpn ipsec phase2-interface
         set dst-subnet 10.0.100.0 255.255.255.0
     next
 end
-</code></pre><p>Next we configure policies for the VPN in/out:</p>
+</code></pre><p>Next, we configure policies for the VPN in/out:</p>
 <p><img src="/1resources/images/awsvpn/fortigatelocalpolicy.PNG" alt="fortigatelocalpolicy"></p>
-<p>Then configure a static route for access to the private network on the EC2 FortiGate:</p>
+<p>Then, we configure a static route for access to the private network on the EC2 FortiGate:</p>
 <p><img src="/1resources/images/awsvpn/fortigatelocalroute.PNG" alt="fortigatelocalroute"></p>
-<p>Once this is complete on both sides, we can bring the VPN up by sending traffic through it. Lets do a ping from my laptop (192.168.100.2s) to the instance with IP 10.0.100.100.</p>
+<p>Once this is complete on both sides, we can bring the VPN up by sending traffic through it. Let&rsquo;s do a ping from my laptop (192.168.100.2s) to the instance with IP 10.0.100.100.</p>
 <h3 id="ping-from-pc-to-ec2-instance-on-private-subnet">Ping From PC to EC2 Instance On Private Subnet</h3>
 <pre><code>C:\Users\Alan&gt;ping 10.0.100.100
 
@@ -232,9 +232,9 @@ Approximate round trip times in milli-seconds:
     Minimum = 23ms, Maximum = 24ms, Average = 23ms
 
 C:\Users\Alan&gt;
-</code></pre><p>The first ping drops because the VPN was not up yet, but success! I am now able to reach my private subnet instances from my home network. Now lets SSH into our private instance from my home network using putty:</p>
+</code></pre><p>The first ping drops because the VPN was not up yet, but success! I am now able to reach my private subnet instances from my home network. Now let&rsquo;s SSH into our private instance from my home network using putty:</p>
 <p><img src="/1resources/images/awsvpn/putty.PNG" alt="putty"></p>
-<p>Note that I am using a PRIVATE IP instead of a public to access my EC2 instance, that is because this EC2 instance is on a private subnet that does not have a public facing IP.</p>
+<p>Note that I am using a PRIVATE IP instead of a public to access my EC2 instance - This is due to the EC2 instance being on a private subnet that does not have a public facing IP.</p>
 <pre><code>Using username &quot;ec2-user&quot;.
 Authenticating with public key &quot;imported-openssh-key&quot;
 Last login: Fri May 15 23:27:55 2020 from 10.0.100.254
@@ -246,7 +246,7 @@ Last login: Fri May 15 23:27:55 2020 from 10.0.100.254
 https://aws.amazon.com/amazon-linux-2/
 [ec2-user@ip-10-0-100-100 ~]$
 
-</code></pre><p>We are in! Let&rsquo;s run a few commands to demonstrate the environment in which this instance resides:</p>
+</code></pre><p>And we&rsquo;re in! Let&rsquo;s run a few commands to demonstrate the environment in which this instance resides:</p>
 <pre><code>[ec2-user@ip-10-0-100-100 ~]$ ping 8.8.8.8
 PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
 ^C
@@ -254,7 +254,7 @@ PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
 3 packets transmitted, 0 received, 100% packet loss, time 2041ms
 
 [ec2-user@ip-10-0-100-100 ~]$
-</code></pre><p>As discussed before, the private subnet has no outbound internet access, so pings to 8.8.8.8 fail as expected</p>
+</code></pre><p>As discussed before, the private subnet has no outbound internet access, so pings to 8.8.8.8 fail as expected.</p>
 <pre><code>[ec2-user@ip-10-0-100-100 ~]$ ping 10.0.1.254
 PING 10.0.1.254 (10.0.1.254) 56(84) bytes of data.
 64 bytes from 10.0.1.254: icmp_seq=1 ttl=255 time=0.361 ms
@@ -273,9 +273,9 @@ PING 192.168.100.2 (192.168.100.2) 56(84) bytes of data.
 21 packets transmitted, 0 received, 100% packet loss, time 20480ms
 
 [ec2-user@ip-10-0-100-100 ~]$
-</code></pre><p>Pings to 192.168.100.2 (the laptop I am using to access the EC2 instance in the first place) fail! Even though my laptop can reach the instance and receive return traffic (because we are using a stateful firewall), the instance can not initiate a session to my laptop. This is because the routing table in the Private Subnet does not allow this traffic to leave the VPC ! Recall from earlier in the post that there is only a local route to 10.0.0.0/16 within the private subnet. If for some reason we wanted the instances on the private subnet to reach my laptop, we just need to add a route!</p>
+</code></pre><p>Pings to 192.168.100.2 (the laptop I am using to access the EC2 instance in the first place) fail! Even though my laptop can reach the instance and receive return traffic (because we are using a stateful firewall), the instance can not initiate a session to my laptop. This is because the routing table in the Private Subnet does not allow this traffic to leave the VPC! Recall from earlier we only created a local route to 10.0.0.0/16 within the private subnet. If for some reason we wanted the instances on the private subnet to reach my laptop, we just need to add a route!</p>
 <p><img src="/1resources/images/awsvpn/newroute.PNG" alt="newroute"></p>
-<p>The target of the route is the ENI corresponding to port 2 on the FortiGate, which acts like the gateway for the private subnet when it needs outbound access. Traffic sent to this ENI will then be passed through the port2-&gt;AlanVPN firewall policy as traffic will go from instance -&gt; ENI -&gt; VPN.</p>
+<p>The target of the route is the ENI corresponding to port 2 on the FortiGate, which acts like the gateway for the private subnet when it needs outbound access. Traffic sent to this ENI will then be passed through the port2 -&gt; AlanVPN firewall policy as traffic will go from instance -&gt; ENI -&gt; VPN.</p>
 <pre><code>[ec2-user@ip-10-0-100-100 ~]$ ping 192.168.100.2
 PING 192.168.100.2 (192.168.100.2) 56(84) bytes of data.
 64 bytes from 192.168.100.2: icmp_seq=1 ttl=126 time=23.6 ms
@@ -287,11 +287,11 @@ PING 192.168.100.2 (192.168.100.2) 56(84) bytes of data.
 4 packets transmitted, 4 received, 0% packet loss, time 3004ms
 rtt min/avg/max/mdev = 23.475/23.737/24.128/0.308 ms
 [ec2-user@ip-10-0-100-100 ~]$
-</code></pre><p>We now have a bidirectional VPN. One cool feature of the EC2 FortiGate firewall is that you can store logs on its EBS disk, so there is very little delay in viewing logs (as opposed to fortianalyzer). We can see my traffic coming into the network over the VPN by viewing logs on the AlanVPN-&gt;port2 policy:</p>
+</code></pre><p>We now have a bidirectional VPN. One cool feature of the EC2 FortiGate firewall is that you can store logs on its EBS disk, so there is very little delay in viewing logs (as opposed to fortianalyzer). We can see my traffic coming into the network over the VPN by viewing logs on the AlanVPN -&gt; port2 policy:</p>
 <p><img src="/1resources/images/awsvpn/logging.PNG" alt="logging"></p>
 <p>We can also look at the traffic from the instance to my laptop in the port2-&gt;AlanVPN policy after adding the route:</p>
 <p><img src="/1resources/images/awsvpn/loggingout.PNG" alt="logging"></p>
-<p>Now if I added a default route to this ENI the EC2 instance would get internet access but have to pass through the firewall, this traffic can be viewed in the port2-&gt;port1 policy (where I could then use various firewall features to secure the traffic):</p>
+<p>Now if I added a default route to this ENI the EC2 instance would get internet access but have to pass through the firewall, this traffic can be viewed in the port2 -&gt; port1 policy, where I could then use various firewall features to secure the traffic.</p>
 <pre><code>[ec2-user@ip-10-0-100-100 ~]$ ping 8.8.8.8
 PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
 64 bytes from 8.8.8.8: icmp_seq=1 ttl=39 time=11.6 ms
@@ -302,10 +302,10 @@ PING 8.8.8.8 (8.8.8.8) 56(84) bytes of data.
 3 packets transmitted, 3 received, 0% packet loss, time 2003ms
 rtt min/avg/max/mdev = 11.688/11.772/11.850/0.066 ms
 [ec2-user@ip-10-0-100-100 ~]$
-</code></pre><p>Here we see traffic leaving the private subnet and going out to the internet in the port2-&gt;port1 policy.</p>
+</code></pre><p>Here we see traffic leaving the private subnet and going out to the internet in the port2 -&gt; port1 policy.</p>
 <p><img src="/1resources/images/awsvpn/logginginternet.PNG" alt="logginginternet"></p>
 <h2 id="wrapping-up">Wrapping Up</h2>
-<p>As we have seen, setting up a VPN directly with a FortiGate EC2 instance is a simple way of establishing a secure channel between an on prem and a cloud network. This is just one of many ways to accomplish this task, and a skilled cloud architect/network engineer should be able to take all of the parameters and come up with a solution that best meets an organizations network and security needs. In the future I will be experimenting with other methods of connecting my own &ldquo;on prem&rdquo; network with my AWS cloud, and perhaps explore those options in later posts. As usual, if you have any questions about the content of this post, don&rsquo;t hesitate to <a href="mailto:villarreal.alan.aav@gmail.com"><strong>email</strong></a> me or leave a comment in the disqus section below!</p>
+<p>As shown above, setting up a VPN directly with a FortiGate EC2 instance is a simple way of establishing a secure channel between an on prem and a cloud network. This is just one of many ways to accomplish this task, and a skilled cloud architect/network engineer should be able to take all of the parameters and come up with a solution that best meets an organization&rsquo;s network and security needs. In the future I will experiment with other methods of connecting my own &ldquo;on prem&rdquo; network with my AWS cloud, and perhaps explore those options in future posts. As usual, if you have any questions, don&rsquo;t hesitate to <a href="mailto:villarreal.alan.aav@gmail.com"><strong>email</strong></a> me or leave a comment in the disqus section below!</p>
 
 </article>
 

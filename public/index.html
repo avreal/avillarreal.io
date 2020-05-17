@@ -103,36 +103,9 @@
 
       <p><!-- raw HTML omitted -->
 <!-- raw HTML omitted -->
-<p>Part of the curriculum for the AWS Solutions Architect Associate Exam includes a brief look at the VPC and its features, but is by no means a comprehensive overview of networking in AWS. As someone who works in the networking field and has spent a lot of time labbing at home, I wanted to get my hands a bit dirty with AWS networking. In this post I&rsquo;ll go over the process of setting up a site to site VPN between my home FortiGate firewall and a FortiGate EC2 instance with a public/private subnet VPC setup, with the intent of simulating a connection between an on prem network and an AWS infrastructure. I was pleasantly surprised at how intuitive this was given I only have experience with non cloud fortigates, and had a ton of fun setting this up! If you have a FortiGate sitting around and are willing to spend a few cents on EC2, follow along!</p></p>
+<p>Part of the curriculum for the AWS Solutions Architect Associate Exam includes a brief look at the VPC and its features, but it is by no means a comprehensive overview of networking in AWS. As someone who works in the networking field and has spent significant personal time labbing, I wanted to get my hands dirty with AWS networking. In this post I&rsquo;ll go over the process of setting up a site to site VPN between my home FortiGate firewall and a FortiGate EC2 instance with a public/private subnet VPC setup, with the intent of simulating a connection between an on prem network and an AWS infrastructure. I was pleasantly surprised at how intuitive this was, given that I only have experience with non cloud FortiGates, and had a ton of fun setting this up. If you have a FortiGate sitting around and are willing to spend a few cents on EC2, follow along!</p></p>
         
       <a href="/posts/awsfortigatevpn">Read more…</a>
-      
-    </li>
-    
-    <li >
-      <h1><a href="/posts/awsvpn" title="AWS/On-Prem Fortigate Site to Site VPN">AWS/On-Prem Fortigate Site to Site VPN</a></h1>
-      <aside>
-    <ul>
-        <li>
-            
-            <time class="post-date" datetime="2020-05-09T10:39:51-07:00">May 9, 2020</time>
-            
-        </li>
-        
-
-        
-
-        
-    </ul>
-</aside>
-
-      
-
-      <p><!-- raw HTML omitted -->
-<!-- raw HTML omitted -->
-<p>HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO HELLO</p></p>
-        
-      <a href="/posts/awsvpn">Read more…</a>
       
     </li>
     
@@ -158,6 +131,31 @@
       <p><p>When learning about VLANs and layer 2 segmentation, we are always told that the purpose of VLANs is to separate broadcast domains, and traffic from one VLAN can not go to the other VLAN unless specifically allowed. However there are situations in which traffic from one VLAN can leak across to another VLAN which is a massive security risk. In this post I will show an example of VLAN hopping in the case of a native VLAN mismatch, and discuss the native VLAN in general. Note that this is geared more towards Cisco IOS, as other vendors may not implement the native VLAN in their switches.</p></p>
         
       <a href="/posts/nativevlan">Read more…</a>
+      
+    </li>
+    
+    <li >
+      <h1><a href="/posts/ospfareatypes2" title="OSPF Stub Area Types Part 2: Not So Stubby Areas">OSPF Stub Area Types Part 2: Not So Stubby Areas</a></h1>
+      <aside>
+    <ul>
+        <li>
+            
+            <time class="post-date" datetime="2020-03-31T11:06:53-07:00">Mar 31, 2020</time>
+            
+        </li>
+        
+
+        
+
+        
+    </ul>
+</aside>
+
+      
+
+      <p><p>The previous post left off with questions about redistribution into OSPF areas which are also classified as stub areas. Recall that stub areas filter type 4 and 5 LSAs, while totally stubby areas filter type 3,4, and 5. So what happens if we wish to redistribute into a stubby area but keep other external routes out, or redistribute and have access to the entire network but with a minimally sized routing table and LSDB? In this post I will spin up the <a href="/1resources/images/ospfstub1/topology.PNG"><strong>lab</strong></a> (gns3 project download <a href="/1resources/misc/ospfstub1/OSPFStubArea.gns3project"><strong>here</strong></a>) from the previous post and demonstrate what are called Not So Stubby Areas, as well as various subconfigurations of NSSAs.</p></p>
+        
+      <a href="/posts/ospfareatypes2">Read more…</a>
       
     </li>
     
