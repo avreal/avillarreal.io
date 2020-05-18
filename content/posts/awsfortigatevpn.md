@@ -83,7 +83,7 @@ The process for setting up the Fortigate EC2 instance is not much different than
 
 ![instancenetwork](/1resources/images/awsvpn/instancenetwork.PNG)
 
-Now that this is done, we have a t2.small FortiGate EC2 instance spinning up. As you know, our EC2 instance will have a public IP that will allow us to reach it over the internet. Since I have all of my elastic IPs available, I will allocate and then associate an elastic IP with my instance so the IP doesn't change and bring my VPN down (click [__here__](/1resources/images/awsvpn/elasticip.png) for full size).
+Now that this is done, we have a t2.small FortiGate EC2 instance spinning up. As you know, our EC2 instance will have a public IP that will allow us to reach it over the internet. Since I have all of my elastic IPs available, I will allocate and then associate an elastic IP with my instance so the IP doesn't change and bring my VPN down (click [__here__](/1resources/images/awsvpn/elasticip.PNG) for full size).
 
 ![elasticip](/1resources/images/awsvpn/elasticip.PNG)
 
