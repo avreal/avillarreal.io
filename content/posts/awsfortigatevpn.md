@@ -83,7 +83,7 @@ The process for setting up the Fortigate EC2 instance is not much different than
 
 ![instancenetwork](/1resources/images/awsvpn/instancenetwork.PNG)
 
-Now that this is done, we have a t2.small FortiGate EC2 instance spinning up. As you know, our EC2 instance will have a public IP that will allow us to reach it over the internet. Since I have all of my elastic IPs available, I will allocate and then associate an elastic IP with my instance so the IP doesn't change and bring my VPN down.
+Now that this is done, we have a t2.small FortiGate EC2 instance spinning up. As you know, our EC2 instance will have a public IP that will allow us to reach it over the internet. Since I have all of my elastic IPs available, I will allocate and then associate an elastic IP with my instance so the IP doesn't change and bring my VPN down (click [__here__](/1resources/images/awsvpn/elasticip.png) for full size).
 
 ![elasticip](/1resources/images/awsvpn/elasticip.PNG)
 
@@ -103,7 +103,7 @@ Now port1 is connected to our public subnet, and port2 is connected to our priva
 
 ## EC2 Instances On Private Subnet
 
-Now that the fortigate is staged for our VPN setup, I will spin up two t2.micro Amazon Linux EC2 instances (free tier!) in the private subnet at 10.0.100.100 and 10.0.100.101, these will be the devices I will try to hit over the VPN. This step should be quite simple so I will just say that we must configure them to be in the private network and specify the IP as shown here:
+Now that the fortigate is staged for our VPN setup, I will spin up two t2.micro Amazon Linux EC2 instances (free tier!) in the private subnet at 10.0.100.100 and 10.0.100.101, these will be the devices I will try to hit over the VPN. This step should be quite simple so I will just say that we must configure them to be in the private network and specify the IP as shown here (click [__here__](/1resources/images/awsvpn/ec2network.png) for full size):
 
 ![ec2network](/1resources/images/awsvpn/ec2network.png)
 
@@ -147,7 +147,7 @@ config vpn ipsec phase2-interface
 end
 ~~~
 
-Next, we configure policies for the VPN in/out:
+Next, we configure policies for the VPN in/out (click [__here__](/1resources/images/awsvpn/fortigateawspolicy.png) for full size):
 
 ![fortigateawspolicy](/1resources/images/awsvpn/fortigateawspolicy.PNG)
 
@@ -182,7 +182,7 @@ config vpn ipsec phase2-interface
 end
 ~~~
 
-Next, we configure policies for the VPN in/out:
+Next, we configure policies for the VPN in/out (click [__here__](/1resources/images/awsvpn/fortigatelocalpolicy.png) for full size):
 
 ![fortigatelocalpolicy](/1resources/images/awsvpn/fortigatelocalpolicy.PNG)
 
