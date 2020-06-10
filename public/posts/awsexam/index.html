@@ -1,0 +1,220 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+  <title>Alan Villarreal - avillarreal.io</title>
+  <meta charset="utf-8" />
+<meta name="viewport" content="width=1024">
+<meta name="description" content="Writing on Various Network Engineering and Network Programmability Topics" />
+<meta name="author" content="Alan Villarreal - avillarreal.io" /><meta property="og:title" content="Passing Certification Exams: AWS SAA and Beyond" />
+<meta property="og:description" content="On June 1, 2020, I passed the AWS Certified Solutions Architect Associate (SAA-C01) exam with a 940/1000 score. This was the culmination of a few months of (admittedly on and off) studying and labbing with various AWS services. Perhaps the most important thing I&rsquo;ve learned over the last year on my certification journey with Cisco and AWS is how to properly study and learn new content. Studying can be made much more efficient by avoiding common techniques that might be holdovers from high school/university. While these techniques may not be as applicable to technical topics where practical hands-on skills are required, the initial learning and memorization required to put knowledge into action will become much easier. In this post I&rsquo;ll go over the study strategies that I used for passing the AWS and the CCNP exams, as well as study tips that can be applied generally to any field." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="avillarreal.io/posts/awsexam/" />
+<meta property="article:published_time" content="2020-06-08T10:39:51-07:00" />
+<meta property="article:modified_time" content="2020-06-08T10:39:51-07:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Passing Certification Exams: AWS SAA and Beyond"/>
+<meta name="twitter:description" content="On June 1, 2020, I passed the AWS Certified Solutions Architect Associate (SAA-C01) exam with a 940/1000 score. This was the culmination of a few months of (admittedly on and off) studying and labbing with various AWS services. Perhaps the most important thing I&rsquo;ve learned over the last year on my certification journey with Cisco and AWS is how to properly study and learn new content. Studying can be made much more efficient by avoiding common techniques that might be holdovers from high school/university. While these techniques may not be as applicable to technical topics where practical hands-on skills are required, the initial learning and memorization required to put knowledge into action will become much easier. In this post I&rsquo;ll go over the study strategies that I used for passing the AWS and the CCNP exams, as well as study tips that can be applied generally to any field."/>
+
+<meta name="generator" content="Hugo 0.72.0" />
+    
+ 
+
+
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous" />
+  <link rel="stylesheet" href="/fontawesome/css/all.min.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Slab|Ruda" />
+  <link rel="stylesheet" type="text/css" href="/css/styles-light.css" />
+</head>
+
+<body>
+  <div id="container">
+    <header style="height: 55px;">
+      <h1>
+                <a href="/"> Browser#sh avillarreal.io</a>
+            </h1>
+
+      <ul id="social-media">
+      </ul>
+      
+    </header>
+
+    
+<nav style="padding-top: 10px;">
+    <ul>
+        <li>
+            <a class="" href="https://www.linkedin.com/in/avreal31" target = "_blank">
+                <i class="fa-li fa fa-lg"></i><span>LINKEDIN</span>
+            </a>
+        </li>
+
+        <li>
+            <a class="" href="https://github.com/avreal" target = "_blank">
+                <i class="fa-li fa fa-lg"></i><span>GITHUB</span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="" href="/about">
+                <i class="fa-li fa  fa-lg"></i><span>ABOUT</span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="" href="/posts">
+                <i class="fa-li fa  fa-lg"></i><span>POSTS</span>
+            </a>
+        </li>
+        
+    </ul>
+</nav>
+
+
+    <main>
+
+
+
+
+<article>
+
+    <h1>Passing Certification Exams: AWS SAA and Beyond</h1>
+
+    
+      <aside>
+    <ul>
+        <li>
+            
+            <time class="post-date" datetime="2020-06-08T10:39:51-07:00">Jun 8, 2020</time>
+            
+        </li>
+        
+
+        
+
+        
+    </ul>
+</aside>
+
+    
+
+    
+
+
+    <p>On June 1, 2020, I passed the AWS Certified Solutions Architect Associate (SAA-C01) exam with a 940/1000 score. This was the culmination of a few months of (admittedly on and off) studying and labbing with various AWS services. Perhaps the most important thing I&rsquo;ve learned over the last year on my certification journey with Cisco and AWS is how to properly study and learn new content. Studying can be made much more efficient by avoiding common techniques that might be holdovers from high school/university. While these techniques may not be as applicable to technical topics where practical hands-on skills are required, the initial learning and memorization required to put knowledge into action will become much easier. In this post I&rsquo;ll go over the study strategies that I used for passing the AWS and the CCNP exams, as well as study tips that can be applied generally to any field.</p>
+<p>The current gold standard for AWS exam preparation is a combination of Stephane Maarek&rsquo;s 
+
+<a href="https://www.udemy.com/user/stephane-maarek/" target = "_blank"><strong>courses</strong></a>  + Jon Bonso&rsquo;s 
+
+<a href="https://portal.tutorialsdojo.com/" target = "_blank"><strong>practice exams</strong></a> . I also used AWS documentation and white papers to fill in some gaps while doing hands-on work. Overall, I estimate that I spent about 50 hours preparing for the exam (excluding the development of this site on AWS).</p>
+<h2 id="the-aws-exam-experience">The AWS Exam Experience</h2>
+<p>Before going into more general discussion of studying for the exam, I&rsquo;d like to make some comments on the AWS exam experience. I found the exam to be fair and a good assessment of entry level knowledge. The solutions architect associate exam is more about the <em>why</em> and <em>when</em> of AWS services, as opposed to <em>how</em> they work on a deep level. Many of the questions are geared towards identifying keywords and being able to pick the correct service(s) in the answer choices. For example, if you see &ldquo;NoSQL&rdquo;, there is a 99% chance the answer involves DynamoDB. Or, if the word &ldquo;decouple&rdquo; is used, chances are the answer is SQS (the probability is lower than for NoSQL though :)). The difficulty of the exam comes from the vast amount of services you must become familiar with in addition to exposure to other areas of IT such as networking or databases, fortunately my networking/IT background made getting into AWS much easier than if I was a total newbie. The main difficulty was trying to pick an answer when there are 2 seemingly valid choices (2 choices were almost always obviously wrong).  Unlike Cisco, the exam isn&rsquo;t trying to trick you at every turn by using terrible grammar and the tiniest details to force you into an extremely difficult decision between answer choices. There were no questions on obscure trivia that a competent engineer could google in 5 seconds, they want to make sure you know the big picture as opposed to just easily obtained information. The Pearson Vue online proctoring system worked just fine for me - about 10 minutes after checking in, my proctor messaged me and performed a quick check of my wrists and the table, then the exam started. After finishing the exam, there was a short survey followed by the OnVue program immediately closing which initially spooked me, but the results showed up within a few minutes on the AWS certification portal. Overall, I look forward to getting into the other tracks and tackling those exams, as the AWS exam experience was very positive and much more polished compared to Cisco’s.</p>
+<h2 id="stephane-maarek-courses-and-efficient-studying">Stephane Maarek Courses And Efficient Studying</h2>
+<p>Stephane&rsquo;s Course provides an excellent overview of all the exam objectives over about 24 hours of slides and hands-on labs. There is also a practice exam included which I took the day before my actual exam. There was nothing I encountered on the actual exam that wasn&rsquo;t covered in some way in Stephane&rsquo;s course, so I would highly recommend this course to anyone looking to learn the content and pass the exam convincingly. For someone that is totally new to AWS, this course may be daunting as he does talk quite fast so it is easy to miss things. I found myself replaying certain parts or even entire videos several times to take in all the information that was in them. The conventional study tactic here would be to mindlessly write everything down and regurgitate it into our own words, then reread it, highlight, underline, etc. to make us feel like we are learning. This, however, proves useless as all of the slides in the course are provided which makes up 95% of what you would write down while watching anyway. While writing and rewatching helps in the very short term, long term memory is created through active learning. Of course this material is a bit different than your typical Biology 101 course that is strictly memorizing facts/definitions, but the aspect of hands-on work plays into the active learning framework to further strengthen the learning of the material within the course. There are several concepts in the active learning framework that I will quickly discuss here (and more that I am not mentioning as they aren&rsquo;t as applicable). I will not go into much detail on how exactly these methods work or all of the studies that have shown why they are successful, but I highly recommend the book 
+
+<a href="https://www.amazon.com/Make-Stick-Science-Successful-Learning/dp/0674729013" target = "_blank"><strong>Make It Stick: The Science Of Successful Learning</strong></a>  for those interested in a deeper dive on the science of learning.</p>
+<h3 id="retrieval-practiceactive-recall">Retrieval Practice/Active Recall</h3>
+<p>The action of repetitively reading and watching new material makes us feel like we are learning, but what is actually happening is that we are being deceived into thinking we understand while actually we just becoming more familiar with the specific text or video in front of us. What we should be doing instead is retrieval practice, which is just a fancy way of saying &ldquo;quizzing yourself&rdquo;. Active recall has been proven to strengthen memory, as the act of recalling a fact generates stronger memorization than simply rereading it. While watching Stephane&rsquo;s course, I wrote notes in the form of the 
+
+<a href="https://www.youtube.com/watch?v=iIyDJK_SAjs" target = "_blank"><strong>Google sheets method</strong></a>  so that I could go through and constantly test myself without further context from the rest of my notes. Flashcards, whether physical or digital with apps like Anki, are also a great way of doing this sort of practice. Generally this doesn&rsquo;t help as much with the big picture sort of questions but for questions like &ldquo;What databases does RDS support?&rdquo;, active recall is the way to go. The image below shows a small snippet of my Google sheet with questions in the first column, then answers hidden by making the text white in the second column. After recalling an answer, I would click on the corresponding cell with hidden text to check, then color the cells according to how well I knew the answer with green being 100% perfect recall, and red being 0% - absolutely no idea.</p>
+<p><img src="/1resources/images/awsexam/googlesheets.PNG" alt="googlesheets"></p>
+<h3 id="spaced-repetition">Spaced Repetition</h3>
+<p>Building upon the previous concept, we should space out our active recall study sessions. The idea is that we go through our practice questions, let them stew in our brains for a bit so that some forgetting may occur, then exercise our brain by working to recall the information in the next session. Our intuition tells us to just repeat a question over and over until we understand it, but this tricks our brain in the exact same way as rereading and doesn’t actually commit the information to our long term memory. A typical way of doing this is according to how much we struggle to recall. If I am able to immediately answer a practice question, I would not remove it from the question pool but instead mark it in a way that I would see it again after 5 days. If I just had no idea whatsoever, I mark it for review in the next study session. This type of repetition is built into Anki, but can be done in flashcards/google sheets with a bit of extra work as shown above.</p>
+<h3 id="interleaving-of-topics">Interleaving Of Topics</h3>
+<p>The third main point of active learning is the interleaving of topics. For example, instead of studying decks of storage solutions, EC2, and S3 cards separately, we should have all of the cards mixed together and study them at the same time. This allows us to better distinguish question types and not fall into the trap of using context to select the correct answer. This pitfall becomes extremely obvious when doing the topic based exams on the TutorialsDojo site. If we know that we are doing questions related to DynamoDB, chances are the answers are going to be DynamoDB related, so we aren’t effectively gauging how well we can actually recall that information. In that regard I suggest avoiding topic based exams entirely and sticking to comprehensive exams.</p>
+<h2 id="using-practice-exams-effectively">Using Practice Exams Effectively</h2>
+<p>The other primary source I used was the Jon Bonso practice exams, available on both Udemy and the TutorialsDojo website. These practice exams are extremely valuable because they provide an excellent approximation of what the actual exam will be like (the actual exam is less wordy though). They also encompass the three tenets of active recall studying if used correctly. The version of the exams on the TutorialsDojo website only presents a random subset of the questions on every practice exam (30/65), whereas the Udemy version always presents all 65. In addition, the Udemy version doesn&rsquo;t support review mode, so I highly recommend purchasing the exams from their website directly for the same price. In my studying, I took a few of the practice exams immediately after finishing the Stephane course, carefully read through all of the explanations, and took notes on what I needed to study further. Then, I did not look at the practice exams again until about a week before my exam, where I repeated the process and went back to review certain topics or question types that I was weak in. I then took one last round of the practice exams in the 2 days leading up to the test. My scores averaged ~60% in the first round of testing, ~75% in the second round, and ~90% on the day before the exam. However, it is very common for practice exams to be misused. The main issue is that people often take the exams too frequently and eventually end up memorizing the answers, giving themselves the illusion that they are more prepared than they actually are. The value in these exams lies in being exposed to a realistic testing environment where every question is a new challenge, with extremely in depth explanations for each question after they are answered. They provide an environment that allows you to actively recall information, do spaced repetition by taking multiple exams, and interleave topics, as long as you are not taking the topic based exams.</p>
+<p>The key is to take the exams often enough that you are exposed to the question types, answer explanations, and exam topics without mindlessly going through and quickly answering the questions. Overall, I would say it is possible to pass the actual exam using only these practice exams and the explanations/links given, but you would likely end up with large gaps of practical AWS knowledge.</p>
+<h2 id="other-courses">Other Courses</h2>
+<p>There are many other courses out there for AWS exams such as linuxacademy, acloudguru, Adrian Cantrill&rsquo;s course, freecodecamp, etc. I can not speak to the quality of these as I did not use them, however Adrian Cantrill&rsquo;s new course is gaining momentum as a contender to Stephane&rsquo;s for the SAA-C02. There is value in using multiple study sources, but this generally comes from using AWS documentation/white papers or re:Invent videos, so purchasing multiple courses shouldn&rsquo;t be necessary. I suggest making use of available free trials to determine which style of course works best for you.</p>
+<h2 id="final-thoughts">Final Thoughts</h2>
+<p>For those who plan on obtaining certifications as they progress through their career, learning how to study effectively will be a great tool not only for these exams, but learning any new subject. There are many misconceptions and habits about studying that are formed in our school years that are hard to get rid of, but doing so opens up much more efficient ways of obtaining new information.  At this point I am not going to immediately take on another AWS exam, but I would like to get into the advanced networking specialty at some point in the future. As usual, if you have any questions, don&rsquo;t hesitate to <a href="mailto:villarreal.alan.aav@gmail.com"><strong>email</strong></a> me, leave a comment in the disqus section below, or message me on LinkedIn!</p>
+
+</article>
+
+
+<section class="post-nav">
+    <ul>
+        <l1>
+            <a href="/"> <i class="fa fa-chevron-circle-left"> </i> Back</a>
+        </l1>
+        
+        
+    </ul>
+</section>
+    
+    
+        <section class="comments-block">
+      <button id="show-comments" style="display: none;"><i class="fa fa-comments"></i> </button>
+</section>
+
+<section id="disqus_thread"></section>
+
+<script>
+      (function () {
+            
+            
+            if (window.location.hostname == "localhost")
+                  return;
+
+            var disqus_loaded = false;
+            var disqus_shortname = 'avillarrealio';
+            var disqus_button = document.getElementById("show-comments");
+
+            disqus_button.style.display = "";
+            disqus_button.addEventListener("click", disqus, false);
+
+            function disqus() {
+
+                  if (!disqus_loaded) {
+                        disqus_loaded = true;
+
+                        var e = document.createElement("script");
+                        e.type = "text/javascript";
+                        e.async = true;
+                        e.src = "//" + disqus_shortname + ".disqus.com/embed.js";
+                        (document.getElementsByTagName("head")[0] ||
+                              document.getElementsByTagName("body")[0])
+                        .appendChild(e);
+
+                        
+                        document.getElementById("show-comments").style.display = "none";
+                  }
+            }
+
+            
+            var hash = window.location.hash.substr(1);
+            if (hash.length > 8) {
+                  if (hash.substring(0, 8) == "comment-") {
+                        disqus();
+                  }
+            }
+
+            
+            if (/bot|google|baidu|bing|msn|duckduckgo|slurp|yandex/i.test(navigator.userAgent)) {
+                  disqus();
+            }
+      })();
+</script>
+
+    
+
+
+
+
+
+</main>
+    <footer>
+        <h6>Copyright © 2020 - Alan Villarreal 
+            , Feel free to <a href="mailto:villarreal.alan.aav@gmail.com" target="_top">Email</a> with any questions, comments, or feedback!
+        </h6>  
+    </footer>
+</div>
+<script src="/avillarreal.io/js/scripts.js"></script>
+
+</body>
+
+</html>
+

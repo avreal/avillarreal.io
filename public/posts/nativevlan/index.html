@@ -18,7 +18,7 @@
 <meta name="twitter:title" content="VLAN Hopping Over Trunks: Why Native VLAN Mismatches Matter "/>
 <meta name="twitter:description" content="When learning about VLANs and layer 2 segmentation, we are always told that the purpose of VLANs is to separate broadcast domains, and traffic from one VLAN can not go to the other VLAN unless specifically allowed. However there are situations in which traffic from one VLAN can leak across to another VLAN which is a massive security risk. In this post I will show an example of VLAN hopping in the case of a native VLAN mismatch, and discuss the native VLAN in general. Note that this is geared more towards Cisco IOS, as other vendors may not implement the native VLAN in their switches."/>
 
-<meta name="generator" content="Hugo 0.70.0" />
+<meta name="generator" content="Hugo 0.72.0" />
     
  
 
@@ -46,13 +46,13 @@
 <nav style="padding-top: 10px;">
     <ul>
         <li>
-            <a class="" href="https://www.linkedin.com/in/avreal31">
+            <a class="" href="https://www.linkedin.com/in/avreal31" target = "_blank">
                 <i class="fa-li fa fa-lg"></i><span>LINKEDIN</span>
             </a>
         </li>
 
         <li>
-            <a class="" href="https://github.com/avreal">
+            <a class="" href="https://github.com/avreal" target = "_blank">
                 <i class="fa-li fa fa-lg"></i><span>GITHUB</span>
             </a>
         </li>
@@ -104,7 +104,7 @@
 
 
     <p>When learning about VLANs and layer 2 segmentation, we are always told that the purpose of VLANs is to separate broadcast domains, and traffic from one VLAN can not go to the other VLAN unless specifically allowed. However there are situations in which traffic from one VLAN can leak across to another VLAN which is a massive security risk. In this post I will show an example of VLAN hopping in the case of a native VLAN mismatch, and discuss the native VLAN in general. Note that this is geared more towards Cisco IOS, as other vendors may not implement the native VLAN in their switches.</p>
-<p>Before getting into it, lets first look into our lab setup. Click <a href="/1resources/images/nativevlan/nativevlan.PNG" target = "_blank"><strong>here</strong></a> for full size.</p>
+<p>Before getting into it, lets first look into our lab setup. Click <a href="/1resources/images/nativevlan/nativevlan.PNG"><strong>here</strong></a> for full size.</p>
 <p><img src="/1resources/images/nativevlan/nativevlan.PNG" alt="nativevlanlab"></p>
 <p>I am using the vios_l2-adventerprisek9-m.03.2017.qcow2 image here, as IOU images have some unexpected behavior when it comes to VLAN tagging. I have created a portable project that can be downloaded <a href="/1resources/misc/nativevlan/nativevlan.gns3project"><strong>here</strong></a> (you must have your own IOSv image).</p>
 <p>We simply have 3 L3 Switches, each with VLANs 2-3 configured and a PC connected, then a DHCP server. The switches have dot1q trunks configured between them, all with default settings. The PCs are numbered according to the access VLAN they are plugged into.</p>
