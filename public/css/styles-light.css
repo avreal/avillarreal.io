@@ -432,3 +432,7 @@ ul.pagination li {
 strong {
   color: midnightblue;
 }
+
+code {
+  white-space : pre-wrap !important;
+}

@@ -1,0 +1,409 @@
+<!doctype html>
+
+<html lang="en">
+
+<head>
+  <title>Alan Villarreal - avillarreal.io</title>
+  <meta charset="utf-8" />
+<meta name="viewport" content="width=1024">
+<meta name="description" content="Writing on Various Network Engineering and Network Programmability Topics" />
+<meta name="author" content="Alan Villarreal - avillarreal.io" /><meta property="og:title" content="An Introduction To Interacting With Nornir Output" />
+<meta property="og:description" content="Over the past year I&rsquo;ve taken an interest in network automation tools and how I can apply them to my work to make tasks easier. There are low level libraries such as 
+Paramiko, a python SSH implementation, that allow you to programmatically access your devices but require lots of overhead and additional configuration. We can go up one level of abstraction to libraries such as 
+Netmiko and
+NAPALM. These leverage connection libraries like Paramiko to manage connections to devices and interact with them. You can accomplish a lot with Netmiko/NAPALM, but you can go one step further with something like 
+Ansible  to orchestrate your network and infrastructure. Ansible is widely used and has huge community support, but there are a few minor annoyances. Ansible playbooks are written in a domain specific language which makes logic complicated, it doesn&rsquo;t scale very well, and can be tricky to debug. I believe network engineers can benefit greatly from learning 
+Nornir. Nornir is an automation framework that is functionally very similar to Ansible, but in pure python. Because it is pure python, it is much easier to debug and extend the functionality. It has threading built in and is highly scalable. In this post I&rsquo;ll go over some basics of the Nornir framework and show the output classes that you will interact with when using it." />
+<meta property="og:type" content="article" />
+<meta property="og:url" content="avillarreal.io/posts/intronornir/" />
+<meta property="article:published_time" content="2020-06-19T15:10:27-07:00" />
+<meta property="article:modified_time" content="2020-06-19T15:10:27-07:00" />
+
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="An Introduction To Interacting With Nornir Output"/>
+<meta name="twitter:description" content="Over the past year I&rsquo;ve taken an interest in network automation tools and how I can apply them to my work to make tasks easier. There are low level libraries such as 
+Paramiko, a python SSH implementation, that allow you to programmatically access your devices but require lots of overhead and additional configuration. We can go up one level of abstraction to libraries such as 
+Netmiko and
+NAPALM. These leverage connection libraries like Paramiko to manage connections to devices and interact with them. You can accomplish a lot with Netmiko/NAPALM, but you can go one step further with something like 
+Ansible  to orchestrate your network and infrastructure. Ansible is widely used and has huge community support, but there are a few minor annoyances. Ansible playbooks are written in a domain specific language which makes logic complicated, it doesn&rsquo;t scale very well, and can be tricky to debug. I believe network engineers can benefit greatly from learning 
+Nornir. Nornir is an automation framework that is functionally very similar to Ansible, but in pure python. Because it is pure python, it is much easier to debug and extend the functionality. It has threading built in and is highly scalable. In this post I&rsquo;ll go over some basics of the Nornir framework and show the output classes that you will interact with when using it."/>
+
+<meta name="generator" content="Hugo 0.72.0" />
+    
+ 
+
+
+
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha256-l85OmPOjvil/SOvVt3HnSSjzF1TUMyT9eV0c2BzEGzU=" crossorigin="anonymous" />
+  <link rel="stylesheet" href="/fontawesome/css/all.min.css" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto+Slab|Ruda" />
+  <link rel="stylesheet" type="text/css" href="/css/styles-light.css" />
+</head>
+
+<body>
+  <div id="container">
+    <header style="height: 55px;">
+      <h1>
+                <a href="/"> Browser#sh avillarreal.io</a>
+            </h1>
+
+      <ul id="social-media">
+      </ul>
+      
+    </header>
+
+    
+<nav style="padding-top: 10px;">
+    <ul>
+        <li>
+            <a class="" href="https://www.linkedin.com/in/avreal31" target = "_blank">
+                <i class="fa-li fa fa-lg"></i><span>LINKEDIN</span>
+            </a>
+        </li>
+
+        <li>
+            <a class="" href="https://github.com/avreal" target = "_blank">
+                <i class="fa-li fa fa-lg"></i><span>GITHUB</span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="" href="/about">
+                <i class="fa-li fa  fa-lg"></i><span>ABOUT</span>
+            </a>
+        </li>
+        
+        <li>
+            <a class="" href="/posts">
+                <i class="fa-li fa  fa-lg"></i><span>POSTS</span>
+            </a>
+        </li>
+        
+    </ul>
+</nav>
+
+
+    <main>
+
+
+
+
+<article>
+
+    <h1>An Introduction To Interacting With Nornir Output</h1>
+
+    
+      <aside>
+    <ul>
+        <li>
+            
+            <time class="post-date" datetime="2020-06-19T15:10:27-07:00">Jun 19, 2020</time>
+            
+        </li>
+        
+
+        
+
+        
+    </ul>
+</aside>
+
+    
+
+    
+
+
+    <p>Over the past year I&rsquo;ve taken an interest in network automation tools and how I can apply them to my work to make tasks easier. There are low level libraries such as 
+<a href="http://www.paramiko.org/" target = "_blank"><strong>Paramiko</strong></a>, a python SSH implementation, that allow you to programmatically access your devices but require lots of overhead and additional configuration. We can go up one level of abstraction to libraries such as 
+<a href="https://github.com/ktbyers/netmiko" target = "_blank"><strong>Netmiko</strong></a> and
+<a href="https://napalm-automation.net/" target = "_blank"><strong>NAPALM</strong></a>. These leverage connection libraries like Paramiko to manage connections to devices and interact with them. You can accomplish a lot with Netmiko/NAPALM, but you can go one step further with something like 
+<a href="https://www.ansible.com/" target = "_blank"><strong>Ansible</strong></a>  to orchestrate your network and infrastructure. Ansible is widely used and has huge community support, but there are a few minor annoyances. Ansible playbooks are written in a domain specific language which makes logic complicated, it doesn&rsquo;t scale very well, and can be tricky to debug. I believe network engineers can benefit greatly from learning 
+<a href="https://nornir.readthedocs.io/en/latest/" target = "_blank"><strong>Nornir</strong></a>. Nornir is an automation framework that is functionally very similar to Ansible, but in pure python. Because it is pure python, it is much easier to debug and extend the functionality. It has threading built in and is highly scalable. In this post I&rsquo;ll go over some basics of the Nornir framework and show the output classes that you will interact with when using it.</p>
+<h2 id="installation">Installation</h2>
+<p>Installation is very simple, use pip as follows and confirm you can import the package:</p>
+<pre><code>$pip3 install nornir
+
+$python3
+&gt;&gt;&gt;import nornir.core
+&gt;&gt;&gt;
+</code></pre><h2 id="getting-started">Getting Started</h2>
+<p>The following was originally written on my github to teach coworkers about Nornir, I thought it would make a good post so I am copying it here with some minor changes. Check out my github
+<a href="https://github.com/avreal/NetworkAutomationScenarios/tree/master/NornirBasics" target = "_blank"><strong>repo</strong></a>  to see the config file, hosts, and other Nornir scenarios. This isn&rsquo;t meant to be a tutorial from scratch, I would recommend reading the 
+<a href="https://nornir.readthedocs.io/en/latest/tutorials/intro/index.html" target ="_blank"><strong>docs</strong></a>  but this should serve as a good reference for interacting with Nornir objects and the results they generate.</p>
+<p>First we instantiate the InitNornir class, here we can specify a config file or pass the contents as parameters. The config file specifies the location of my hosts, groups, and defaults files (among other parameters). We then use the run function to execute the task over the hosts in the inventory. In this case I am using get_facts from the NAPALM library.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">from</span> nornir <span style="color:#f92672">import</span> InitNornir
+<span style="color:#f92672">from</span> nornir.plugins.tasks.networking <span style="color:#f92672">import</span> napalm_get
+<span style="color:#f92672">from</span> nornir.plugins.functions.text <span style="color:#f92672">import</span> print_result
+<span style="color:#f92672">import</span> json
+
+nr <span style="color:#f92672">=</span> InitNornir(config_file<span style="color:#f92672">=</span><span style="color:#e6db74">&#34;./config.yaml&#34;</span>)
+task_result <span style="color:#f92672">=</span> nr<span style="color:#f92672">.</span>run(task<span style="color:#f92672">=</span>napalm_get,getters<span style="color:#f92672">=</span>[<span style="color:#e6db74">&#34;facts&#34;</span>])
+</code></pre></div><p>Lets look at the output of type() for these 2 items.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> type(nr)
+<span style="color:#f92672">&lt;</span><span style="color:#66d9ef">class</span> <span style="color:#960050;background-color:#1e0010">&#39;</span><span style="color:#a6e22e">nornir</span><span style="color:#f92672">.</span>core<span style="color:#f92672">.</span>Nornir<span style="color:#e6db74">&#39;&gt;</span>
+<span style="color:#f92672">&gt;&gt;&gt;</span>
+<span style="color:#f92672">&gt;&gt;&gt;</span> type(task_result)
+nornir<span style="color:#f92672">.</span>core<span style="color:#f92672">.</span>task<span style="color:#f92672">.</span>AggregatedResult
+<span style="color:#f92672">&gt;&gt;&gt;</span>
+</code></pre></div><p>We will mostly be working with the AggregatedResult object, but there are some useful methods on the nornir.core.Nornir object shown below. These can be used to access the inventory dictionary generated during instantiation. I highly recommend exploring these methods further while experimenting with Nornir.</p>
+<pre><code>&gt;&gt;&gt; type(nr.inventory)
+&lt;class 'nornir.core.inventory.Inventory'&gt;
+
+&gt;&gt;&gt; dir(nr.inventory)
+['__class__', '__delattr__', '__dir__', '__doc__', '__eq__', '__format__', '__ge__', 
+'__getattribute__', '__gt__', '__hash__', '__init__', '__init_subclass__', '__le__', 
+'__len__', '__lt__', '__module__', '__ne__', '__new__', '__reduce__', '__reduce_ex__', 
+'__repr__', '__setattr__', '__sizeof__', '__slots__', '__str__', '__subclasshook__', 
+'_update_group_refs', 'add_group', 'add_host', 'children_of_group', 'defaults', 'dict', 
+'filter', 'get_defaults_dict', 'get_groups_dict', 'get_hosts_dict', 'get_inventory_dict', 
+'groups', 'hosts']
+&gt;&gt;&gt; 
+
+&gt;&gt;&gt; nr.inventory.hosts
+{'Router1': Host: Router1, 'Router2': Host: Router2, 'Router3': Host: Router3, 'Router4': Host: Router4}
+
+&gt;&gt;&gt; nr.inventory.get_inventory_dict()
+{'hosts': {'Router1': {'hostname': '192.168.100.10', 'port': 22, 'username': None, 'password': None, 'platform': None, 'groups': ['cisco_ios', 'r1r2'], 'data': {}, 'connection_options': {}}, 'Router2': {'hostname': '192.168.100.20', 'port': 22, 'username': None, 'password': None, 'platform': None, 'groups': ['cisco_ios', 'r1r2'], 'data': {}, 'connection_options': {}}, 'Router3': {'hostname': '192.168.100.30', 'port': 22, 'username': None, 'password': None, 'platform': None, 'groups': ['cisco_ios', 'r3r4'], 'data': {}, 'connection_options': {}}, 'Router4': {'hostname': '192.168.100.40', 'port': 22, 'username': None, 'password': None, 'platform': None, 'groups': ['cisco_ios', 'r3r4'], 'data': {}, 'connection_options': {}}}, 'groups': {'global': {'hostname': None, 'port': None, 'username': None, 'password': None, 'platform': None, 'groups': [], 'data': {'domain': 'global.local'}, 'connection_options': {}}, 'r1r2': {'hostname': None, 'port': None, 'username': None, 'password': None, 'platform': None, 'groups': ['cisco_ios', 'global'], 'data': {'asn': 1}, 'connection_options': {}}, 'r3r4': {'hostname': None, 'port': None, 'username': None, 'password': None, 'platform': None, 'groups': ['cisco_ios', 'global'], 'data': {'asn': 1}, 'connection_options': {}}, 'cisco_ios': {'hostname': None, 'port': None, 'username': None, 'password': None, 'platform': 'ios', 'groups': [], 'data': {}, 'connection_options': {}}}, 'defaults': {'hostname': None, 'port': None, 'username': 'admin', 'password': 'admin', 'platform': None, 'data': {}, 'connection_options': {}}}
+&gt;&gt;&gt; 
+</code></pre><p>Suppose we wish to grab certain keys/values from the task result output for a particular device, we can dig further into the AggregatedResult object that was returned from nr.run. First lets do a normal print(task_result):</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#66d9ef">print</span>(task_result)
+AggregatedResult (napalm_get): {<span style="color:#e6db74">&#39;Router1&#39;</span>: MultiResult: [Result: <span style="color:#e6db74">&#34;napalm_get&#34;</span>], <span style="color:#e6db74">&#39;Router2&#39;</span>: MultiResult: [Result: <span style="color:#e6db74">&#34;napalm_get&#34;</span>], <span style="color:#e6db74">&#39;Router3&#39;</span>: MultiResult: [Result: <span style="color:#e6db74">&#34;napalm_get&#34;</span>], <span style="color:#e6db74">&#39;Router4&#39;</span>: MultiResult: [Result: <span style="color:#e6db74">&#34;napalm_get&#34;</span>]}
+</code></pre></div><p>Here we see that the AggregatedResult object is a dict-like object, we can access the individual MultiResult objects by doing task_result['<em>hostname</em>'].</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> task_result[<span style="color:#e6db74">&#39;Router1&#39;</span>]
+MultiResult: [Result: <span style="color:#e6db74">&#34;napalm_get&#34;</span>]
+</code></pre></div><p>Now we have a list-like object, in order to extract data from this we can call the .result method as follows:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> task_result[<span style="color:#e6db74">&#39;Router1&#39;</span>]<span style="color:#f92672">.</span>result
+{<span style="color:#e6db74">&#39;facts&#39;</span>: {<span style="color:#e6db74">&#39;uptime&#39;</span>: <span style="color:#ae81ff">9600</span>, <span style="color:#e6db74">&#39;vendor&#39;</span>: <span style="color:#e6db74">&#39;Cisco&#39;</span>, <span style="color:#e6db74">&#39;os_version&#39;</span>: <span style="color:#e6db74">&#39;Linux Software (I86BI_LINUX-ADVENTERPRISEK9-M), Version 15.4(1)T, DEVELOPMENT TEST SOFTWARE&#39;</span>, <span style="color:#e6db74">&#39;serial_number&#39;</span>: <span style="color:#e6db74">&#39;2048001&#39;</span>, <span style="color:#e6db74">&#39;model&#39;</span>: <span style="color:#e6db74">&#39;Unknown&#39;</span>, <span style="color:#e6db74">&#39;hostname&#39;</span>: <span style="color:#e6db74">&#39;ABC-001-0001&#39;</span>, <span style="color:#e6db74">&#39;fqdn&#39;</span>: <span style="color:#e6db74">&#39;ABC-001-0001.lab.com&#39;</span>, <span style="color:#e6db74">&#39;interface_list&#39;</span>: [<span style="color:#e6db74">&#39;Ethernet0/0&#39;</span>, <span style="color:#e6db74">&#39;Ethernet0/1&#39;</span>, <span style="color:#e6db74">&#39;Ethernet0/2&#39;</span>, <span style="color:#e6db74">&#39;Ethernet0/3&#39;</span>, <span style="color:#e6db74">&#39;Ethernet1/0&#39;</span>, <span style="color:#e6db74">&#39;Ethernet1/1&#39;</span>, <span style="color:#e6db74">&#39;Ethernet1/2&#39;</span>, <span style="color:#e6db74">&#39;Loopback0&#39;</span>]}}
+<span style="color:#f92672">&gt;&gt;&gt;</span> 
+</code></pre></div><p>Now we have a standard dictionary whose data we can access by using its key(s). See below:</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> output <span style="color:#f92672">=</span> task_result[<span style="color:#e6db74">&#39;Router1&#39;</span>]<span style="color:#f92672">.</span>result
+<span style="color:#f92672">&gt;&gt;&gt;</span>
+<span style="color:#f92672">&gt;&gt;&gt;</span> output[<span style="color:#e6db74">&#39;facts&#39;</span>]
+{<span style="color:#e6db74">&#39;uptime&#39;</span>: <span style="color:#ae81ff">9600</span>, <span style="color:#e6db74">&#39;vendor&#39;</span>: <span style="color:#e6db74">&#39;Cisco&#39;</span>, <span style="color:#e6db74">&#39;os_version&#39;</span>: <span style="color:#e6db74">&#39;Linux Software (I86BI_LINUX-ADVENTERPRISEK9-M), Version 15.4(1)T, DEVELOPMENT TEST SOFTWARE&#39;</span>, <span style="color:#e6db74">&#39;serial_number&#39;</span>: <span style="color:#e6db74">&#39;2048001&#39;</span>, <span style="color:#e6db74">&#39;model&#39;</span>: <span style="color:#e6db74">&#39;Unknown&#39;</span>, <span style="color:#e6db74">&#39;hostname&#39;</span>: <span style="color:#e6db74">&#39;ABC-001-0001&#39;</span>, <span style="color:#e6db74">&#39;fqdn&#39;</span>: <span style="color:#e6db74">&#39;ABC-001-0001.lab.com&#39;</span>, <span style="color:#e6db74">&#39;interface_list&#39;</span>: [<span style="color:#e6db74">&#39;Ethernet0/0&#39;</span>, <span style="color:#e6db74">&#39;Ethernet0/1&#39;</span>, <span style="color:#e6db74">&#39;Ethernet0/2&#39;</span>, <span style="color:#e6db74">&#39;Ethernet0/3&#39;</span>, <span style="color:#e6db74">&#39;Ethernet1/0&#39;</span>, <span style="color:#e6db74">&#39;Ethernet1/1&#39;</span>, <span style="color:#e6db74">&#39;Ethernet1/2&#39;</span>, <span style="color:#e6db74">&#39;Ethernet1/3&#39;</span>,<span style="color:#e6db74">&#39;Loopback0&#39;</span>]}
+<span style="color:#f92672">&gt;&gt;&gt;</span>
+<span style="color:#f92672">&gt;&gt;&gt;</span> output[<span style="color:#e6db74">&#39;facts&#39;</span>][<span style="color:#e6db74">&#39;uptime&#39;</span>]
+<span style="color:#ae81ff">9600</span>
+</code></pre></div><p>Given all of the above, we can now iterate through the Aggregated result object with a nested loop to generate an output with the device hostname and all of the data gathered in the MultiResult object. There are several ways to achieve a similar result.</p>
+<p>In this first loop, we print out the hostname as a string then follow it with a nested dictionary where we can then access keys as needed.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#66d9ef">for</span> host <span style="color:#f92672">in</span> task_result:
+<span style="color:#f92672">...</span>     <span style="color:#66d9ef">print</span>(host)
+<span style="color:#f92672">...</span>     <span style="color:#66d9ef">for</span> results <span style="color:#f92672">in</span> task_result[host]:
+<span style="color:#f92672">...</span>             <span style="color:#66d9ef">print</span>(results)
+<span style="color:#f92672">...</span> 
+Router1
+{<span style="color:#e6db74">&#39;facts&#39;</span>: {<span style="color:#e6db74">&#39;uptime&#39;</span>: <span style="color:#ae81ff">9600</span>, <span style="color:#e6db74">&#39;vendor&#39;</span>: <span style="color:#e6db74">&#39;Cisco&#39;</span>, <span style="color:#e6db74">&#39;os_version&#39;</span>: <span style="color:#e6db74">&#39;Linux Software (I86BI_LINUX-ADVENTERPRISEK9-M), Version 15.4(1)T, DEVELOPMENT TEST SOFTWARE&#39;</span>, <span style="color:#e6db74">&#39;serial_number&#39;</span>: <span style="color:#e6db74">&#39;2048001&#39;</span>, <span style="color:#e6db74">&#39;model&#39;</span>: <span style="color:#e6db74">&#39;Unknown&#39;</span>, <span style="color:#e6db74">&#39;hostname&#39;</span>: <span style="color:#e6db74">&#39;ABC-001-0001&#39;</span>, <span style="color:#e6db74">&#39;fqdn&#39;</span>: <span style="color:#e6db74">&#39;ABC-001-0001.lab.com&#39;</span>, <span style="color:#e6db74">&#39;interface_list&#39;</span>: [<span style="color:#e6db74">&#39;Ethernet0/0&#39;</span>, <span style="color:#e6db74">&#39;Ethernet0/1&#39;</span>, <span style="color:#e6db74">&#39;Ethernet0/2&#39;</span>, <span style="color:#e6db74">&#39;Ethernet0/3&#39;</span>, <span style="color:#e6db74">&#39;Ethernet1/0&#39;</span>, <span style="color:#e6db74">&#39;Ethernet1/1&#39;</span>, <span style="color:#e6db74">&#39;Ethernet1/2&#39;</span>, <span style="color:#e6db74">&#39;Ethernet1/3&#39;</span>, <span style="color:#e6db74">&#39;Loopback0&#39;</span>]}}
+Router2
+
+<span style="color:#f92672">...</span>omitted<span style="color:#f92672">...</span>
+
+Router3
+
+<span style="color:#f92672">...</span>omitted<span style="color:#f92672">...</span>
+
+Router4
+
+<span style="color:#f92672">...</span>omitted<span style="color:#f92672">...</span>
+
+</code></pre></div><p>In this example, we use the items() method (recall that AggregatedResult is a dict-like object) and then iterate through the dict_items object we obtain. Since this contains tuples we use an index to access the objects.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> resultsitems <span style="color:#f92672">=</span> task_result<span style="color:#f92672">.</span>items()
+<span style="color:#f92672">&gt;&gt;&gt;</span> <span style="color:#66d9ef">for</span> hosts <span style="color:#f92672">in</span> resultsitems:
+<span style="color:#f92672">...</span>     <span style="color:#66d9ef">print</span>(hosts[<span style="color:#ae81ff">0</span>])
+<span style="color:#f92672">...</span>     <span style="color:#66d9ef">print</span>(hosts[<span style="color:#ae81ff">1</span>]<span style="color:#f92672">.</span>result)
+<span style="color:#f92672">...</span> 
+Router1
+{<span style="color:#e6db74">&#39;facts&#39;</span>: {<span style="color:#e6db74">&#39;uptime&#39;</span>: <span style="color:#ae81ff">9600</span>, <span style="color:#e6db74">&#39;vendor&#39;</span>: <span style="color:#e6db74">&#39;Cisco&#39;</span>, <span style="color:#e6db74">&#39;os_version&#39;</span>: <span style="color:#e6db74">&#39;Linux Software (I86BI_LINUX-ADVENTERPRISEK9-M), Version 15.4(1)T, DEVELOPMENT TEST SOFTWARE&#39;</span>, <span style="color:#e6db74">&#39;serial_number&#39;</span>: <span style="color:#e6db74">&#39;2048001&#39;</span>, <span style="color:#e6db74">&#39;model&#39;</span>: <span style="color:#e6db74">&#39;Unknown&#39;</span>, <span style="color:#e6db74">&#39;hostname&#39;</span>: <span style="color:#e6db74">&#39;ABC-001-0001&#39;</span>, <span style="color:#e6db74">&#39;fqdn&#39;</span>: <span style="color:#e6db74">&#39;ABC-001-0001.lab.com&#39;</span>, <span style="color:#e6db74">&#39;interface_list&#39;</span>: [<span style="color:#e6db74">&#39;Ethernet0/0&#39;</span>, <span style="color:#e6db74">&#39;Ethernet0/1&#39;</span>, <span style="color:#e6db74">&#39;Ethernet0/2&#39;</span>, <span style="color:#e6db74">&#39;Ethernet0/3&#39;</span>, <span style="color:#e6db74">&#39;Ethernet1/0&#39;</span>, <span style="color:#e6db74">&#39;Ethernet1/1&#39;</span>, <span style="color:#e6db74">&#39;Ethernet1/2&#39;</span>, <span style="color:#e6db74">&#39;Ethernet1/3&#39;</span>, <span style="color:#e6db74">&#39;Loopback0&#39;</span>]}}
+Router2
+
+<span style="color:#f92672">...</span>omitted<span style="color:#f92672">...</span>
+
+Router3
+
+<span style="color:#f92672">...</span>omitted<span style="color:#f92672">...</span>
+
+Router4
+
+<span style="color:#f92672">...</span>omitted<span style="color:#f92672">...</span>
+
+<span style="color:#f92672">&gt;&gt;&gt;</span> 
+</code></pre></div><p>In this example, we use a similar loop to the first example but format the output with json.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">import</span> json
+
+<span style="color:#66d9ef">for</span> hosts <span style="color:#f92672">in</span> task_result:
+    <span style="color:#66d9ef">print</span>(hosts)
+    <span style="color:#66d9ef">for</span> results <span style="color:#f92672">in</span> task_result[hosts]:
+        <span style="color:#66d9ef">print</span>(json<span style="color:#f92672">.</span>dumps(results<span style="color:#f92672">.</span>result, indent<span style="color:#f92672">=</span><span style="color:#ae81ff">4</span>))  
+
+Router1
+{
+    <span style="color:#e6db74">&#34;facts&#34;</span>: {
+        <span style="color:#e6db74">&#34;uptime&#34;</span>: <span style="color:#ae81ff">9600</span>,
+        <span style="color:#e6db74">&#34;vendor&#34;</span>: <span style="color:#e6db74">&#34;Cisco&#34;</span>,
+        <span style="color:#e6db74">&#34;os_version&#34;</span>: <span style="color:#e6db74">&#34;Linux Software (I86BI_LINUX-ADVENTERPRISEK9-M), Version 15.4(1)T, DEVELOPMENT TEST SOFTWARE&#34;</span>,
+        <span style="color:#e6db74">&#34;serial_number&#34;</span>: <span style="color:#e6db74">&#34;2048001&#34;</span>,
+        <span style="color:#e6db74">&#34;model&#34;</span>: <span style="color:#e6db74">&#34;Unknown&#34;</span>,
+        <span style="color:#e6db74">&#34;hostname&#34;</span>: <span style="color:#e6db74">&#34;ABC-001-0001&#34;</span>,
+        <span style="color:#e6db74">&#34;fqdn&#34;</span>: <span style="color:#e6db74">&#34;ABC-001-0001.lab.com&#34;</span>,
+        <span style="color:#e6db74">&#34;interface_list&#34;</span>: [
+            <span style="color:#e6db74">&#34;Ethernet0/0&#34;</span>,
+            <span style="color:#e6db74">&#34;Ethernet0/1&#34;</span>,
+            <span style="color:#e6db74">&#34;Ethernet0/2&#34;</span>,
+            <span style="color:#e6db74">&#34;Ethernet0/3&#34;</span>,
+            <span style="color:#e6db74">&#34;Ethernet1/0&#34;</span>,
+            <span style="color:#e6db74">&#34;Ethernet1/1&#34;</span>,
+            <span style="color:#e6db74">&#34;Ethernet1/2&#34;</span>,
+            <span style="color:#e6db74">&#34;Ethernet1/3&#34;</span>,
+            <span style="color:#e6db74">&#34;Loopback0&#34;</span>
+        ]
+    }
+}
+Router2
+
+<span style="color:#f92672">...</span>omitted<span style="color:#f92672">...</span>
+
+Router3
+
+<span style="color:#f92672">...</span>omitted<span style="color:#f92672">...</span>
+
+Router4
+
+<span style="color:#f92672">...</span>omitted<span style="color:#f92672">...</span>
+
+</code></pre></div><p>However nornir also includes a function for neatly printing the AggregatedResult, this is the print_result() function. This is great for configuration management and backup as it requires little effort to use but is very readable.</p>
+<div class="highlight"><pre style="color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4"><code class="language-python" data-lang="python"><span style="color:#f92672">&gt;&gt;&gt;</span> print_result(task_result)
+napalm_get<span style="color:#f92672">**********************************************************************</span>
+<span style="color:#f92672">*</span> Router1 <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">***************************************************</span>
+vvvv napalm_get <span style="color:#f92672">**</span> changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+{ <span style="color:#e6db74">&#39;facts&#39;</span>: { <span style="color:#e6db74">&#39;fqdn&#39;</span>: <span style="color:#e6db74">&#39;ABC-001-0001.lab.com&#39;</span>,
+             <span style="color:#e6db74">&#39;hostname&#39;</span>: <span style="color:#e6db74">&#39;ABC-001-0001&#39;</span>,
+             <span style="color:#e6db74">&#39;interface_list&#39;</span>: [ <span style="color:#e6db74">&#39;Ethernet0/0&#39;</span>,
+                                 <span style="color:#e6db74">&#39;Ethernet0/1&#39;</span>,
+                                 <span style="color:#e6db74">&#39;Ethernet0/2&#39;</span>,
+                                 <span style="color:#e6db74">&#39;Ethernet0/3&#39;</span>,
+                                 <span style="color:#e6db74">&#39;Ethernet1/0&#39;</span>,
+                                 <span style="color:#e6db74">&#39;Ethernet1/1&#39;</span>,
+                                 <span style="color:#e6db74">&#39;Ethernet1/2&#39;</span>,
+                                 <span style="color:#e6db74">&#39;Ethernet1/3&#39;</span>,
+                                 <span style="color:#e6db74">&#39;Loopback0&#39;</span>],
+             <span style="color:#e6db74">&#39;model&#39;</span>: <span style="color:#e6db74">&#39;Unknown&#39;</span>,
+             <span style="color:#e6db74">&#39;os_version&#39;</span>: <span style="color:#e6db74">&#39;Linux Software (I86BI_LINUX-ADVENTERPRISEK9-M), &#39;</span>
+                           <span style="color:#e6db74">&#39;Version 15.4(1)T, DEVELOPMENT TEST SOFTWARE&#39;</span>,
+             <span style="color:#e6db74">&#39;serial_number&#39;</span>: <span style="color:#e6db74">&#39;2048001&#39;</span>,
+             <span style="color:#e6db74">&#39;uptime&#39;</span>: <span style="color:#ae81ff">9600</span>,
+             <span style="color:#e6db74">&#39;vendor&#39;</span>: <span style="color:#e6db74">&#39;Cisco&#39;</span>}}
+<span style="color:#f92672">^^^^</span> END napalm_get <span style="color:#f92672">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
+<span style="color:#f92672">*</span> Router2 <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">***************************************************</span>
+vvvv napalm_get <span style="color:#f92672">**</span> changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+
+<span style="color:#f92672">...</span>omitted<span style="color:#f92672">...</span>
+
+<span style="color:#f92672">^^^^</span> END napalm_get <span style="color:#f92672">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
+<span style="color:#f92672">*</span> Router3 <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">***************************************************</span>
+vvvv napalm_get <span style="color:#f92672">**</span> changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+
+<span style="color:#f92672">...</span>omitted<span style="color:#f92672">...</span>
+
+<span style="color:#f92672">^^^^</span> END napalm_get <span style="color:#f92672">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
+<span style="color:#f92672">*</span> Router4 <span style="color:#f92672">**</span> changed : False <span style="color:#f92672">***************************************************</span>
+vvvv napalm_get <span style="color:#f92672">**</span> changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+
+<span style="color:#f92672">...</span>omitted<span style="color:#f92672">...</span>
+
+<span style="color:#f92672">^^^^</span> END napalm_get <span style="color:#f92672">^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^</span>
+</code></pre></div><h1 id="conclusion">Conclusion</h1>
+<p>Nornir is an incredibly useful tool with tons of potential and this post barely scratches the surface of its capabilities. The value in using a tool like Nornir comes from what you can do with the data that is output from your tasks. The community isn&rsquo;t very large yet but with time I believe Nornir can become a contender to Ansible for network engineers looking to automate in their environment. Future posts will go over more Nornir basics and a look at real world scenarios using Nornir.</p>
+<h3 id="further-reading-and-watching">Further Reading and Watching</h3>
+<p>
+<a href="https://readthedocs.org/projects/nornir/" target = "_blank"><strong>Nornir ReadTheDocs</strong></a>  <!-- raw HTML omitted --></p>
+<p>
+<a href="https://github.com/nornir-automation/nornir" target = "_blank"><strong>Nornir Repo</strong></a>   <!-- raw HTML omitted --></p>
+<p>
+<a href="https://www.youtube.com/watch?v=5SS5tTgacKg" target = "_blank"><strong>Cisco Live Presentation</strong></a>   <!-- raw HTML omitted --></p>
+<p>
+<a href="https://www.youtube.com/watch?v=H7qs-jg6kVg" target = "_blank"><strong>Dmitry Figol Nornir Livestream</strong></a>   <!-- raw HTML omitted --></p>
+
+</article>
+
+
+<section class="post-nav">
+    <ul>
+        <l1>
+            <a href="/"> <i class="fa fa-chevron-circle-left"> </i> Back</a>
+        </l1>
+        
+        
+    </ul>
+</section>
+    
+    
+        <section class="comments-block">
+      <button id="show-comments" style="display: none;"><i class="fa fa-comments"></i> </button>
+</section>
+
+<section id="disqus_thread"></section>
+
+<script>
+      (function () {
+            
+            
+            if (window.location.hostname == "localhost")
+                  return;
+
+            var disqus_loaded = false;
+            var disqus_shortname = 'avillarrealio';
+            var disqus_button = document.getElementById("show-comments");
+
+            disqus_button.style.display = "";
+            disqus_button.addEventListener("click", disqus, false);
+
+            function disqus() {
+
+                  if (!disqus_loaded) {
+                        disqus_loaded = true;
+
+                        var e = document.createElement("script");
+                        e.type = "text/javascript";
+                        e.async = true;
+                        e.src = "//" + disqus_shortname + ".disqus.com/embed.js";
+                        (document.getElementsByTagName("head")[0] ||
+                              document.getElementsByTagName("body")[0])
+                        .appendChild(e);
+
+                        
+                        document.getElementById("show-comments").style.display = "none";
+                  }
+            }
+
+            
+            var hash = window.location.hash.substr(1);
+            if (hash.length > 8) {
+                  if (hash.substring(0, 8) == "comment-") {
+                        disqus();
+                  }
+            }
+
+            
+            if (/bot|google|baidu|bing|msn|duckduckgo|slurp|yandex/i.test(navigator.userAgent)) {
+                  disqus();
+            }
+      })();
+</script>
+
+    
+
+
+
+
+
+</main>
+    <footer>
+        <h6>Copyright © 2020 - Alan Villarreal 
+            , Feel free to <a href="mailto:villarreal.alan.aav@gmail.com" target="_top">Email</a> with any questions, comments, or feedback!
+        </h6>  
+    </footer>
+</div>
+<script src="/avillarreal.io/js/scripts.js"></script>
+
+</body>
+
+</html>
+

@@ -11,7 +11,7 @@
 <meta property="og:description" content="Writing on Various Network Engineering and Network Programmability Topics" />
 <meta property="og:type" content="website" />
 <meta property="og:url" content="avillarreal.io/" />
-<meta property="og:updated_time" content="2020-06-08T10:39:51-07:00" />
+<meta property="og:updated_time" content="2020-06-19T15:10:27-07:00" />
 
 <meta name="twitter:card" content="summary"/>
 <meta name="twitter:title" content="Alan Villarreal"/>
@@ -83,6 +83,36 @@
     
     
     <li class="first" >
+      <h1><a href="/posts/intronornir" title="An Introduction To Interacting With Nornir Output">An Introduction To Interacting With Nornir Output</a></h1>
+      <aside>
+    <ul>
+        <li>
+            
+            <time class="post-date" datetime="2020-06-19T15:10:27-07:00">Jun 19, 2020</time>
+            
+        </li>
+        
+
+        
+
+        
+    </ul>
+</aside>
+
+      
+
+      <p><p>Over the past year I&rsquo;ve taken an interest in network automation tools and how I can apply them to my work to make tasks easier. There are low level libraries such as 
+<a href="http://www.paramiko.org/" target = "_blank"><strong>Paramiko</strong></a>, a python SSH implementation, that allow you to programmatically access your devices but require lots of overhead and additional configuration. We can go up one level of abstraction to libraries such as 
+<a href="https://github.com/ktbyers/netmiko" target = "_blank"><strong>Netmiko</strong></a> and
+<a href="https://napalm-automation.net/" target = "_blank"><strong>NAPALM</strong></a>. These leverage connection libraries like Paramiko to manage connections to devices and interact with them. You can accomplish a lot with Netmiko/NAPALM, but you can go one step further with something like 
+<a href="https://www.ansible.com/" target = "_blank"><strong>Ansible</strong></a>  to orchestrate your network and infrastructure. Ansible is widely used and has huge community support, but there are a few minor annoyances. Ansible playbooks are written in a domain specific language which makes logic complicated, it doesn&rsquo;t scale very well, and can be tricky to debug. I believe network engineers can benefit greatly from learning 
+<a href="https://nornir.readthedocs.io/en/latest/" target = "_blank"><strong>Nornir</strong></a>. Nornir is an automation framework that is functionally very similar to Ansible, but in pure python. Because it is pure python, it is much easier to debug and extend the functionality. It has threading built in and is highly scalable. In this post I&rsquo;ll go over some basics of the Nornir framework and show the output classes that you will interact with when using it.</p></p>
+        
+      <a href="/posts/intronornir">Read more…</a>
+      
+    </li>
+    
+    <li >
       <h1><a href="/posts/awsexam" title="Passing Certification Exams: AWS SAA and Beyond">Passing Certification Exams: AWS SAA and Beyond</a></h1>
       <aside>
     <ul>

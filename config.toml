@@ -48,6 +48,13 @@ disqusShortname = "avillarrealio"
     weight = 1
     urlname = "about"
 
+#[[menu.main]]
+#   identifier = "RESUME"
+#    name = "RESUME"
+#    url = "/resume"
+#    weight = 1
+#    urlname = "resume"
+
 
 
 

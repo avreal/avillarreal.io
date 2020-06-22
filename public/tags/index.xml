@@ -11,6 +11,221 @@
    
    
      <item>
+       <title>An Introduction To Interacting With Nornir Output</title>
+       <link>avillarreal.io/posts/intronornir/</link>
+       <pubDate>Fri, 19 Jun 2020 15:10:27 -0700</pubDate>
+       
+       <guid>avillarreal.io/posts/intronornir/</guid>
+       <description>&lt;p&gt;Over the past year I&amp;rsquo;ve taken an interest in network automation tools and how I can apply them to my work to make tasks easier. There are low level libraries such as 
+&lt;a href=&#34;http://www.paramiko.org/&#34; target = &#34;_blank&#34;&gt;&lt;strong&gt;Paramiko&lt;/strong&gt;&lt;/a&gt;, a python SSH implementation, that allow you to programmatically access your devices but require lots of overhead and additional configuration. We can go up one level of abstraction to libraries such as 
+&lt;a href=&#34;https://github.com/ktbyers/netmiko&#34; target = &#34;_blank&#34;&gt;&lt;strong&gt;Netmiko&lt;/strong&gt;&lt;/a&gt; and
+&lt;a href=&#34;https://napalm-automation.net/&#34; target = &#34;_blank&#34;&gt;&lt;strong&gt;NAPALM&lt;/strong&gt;&lt;/a&gt;. These leverage connection libraries like Paramiko to manage connections to devices and interact with them. You can accomplish a lot with Netmiko/NAPALM, but you can go one step further with something like 
+&lt;a href=&#34;https://www.ansible.com/&#34; target = &#34;_blank&#34;&gt;&lt;strong&gt;Ansible&lt;/strong&gt;&lt;/a&gt;  to orchestrate your network and infrastructure. Ansible is widely used and has huge community support, but there are a few minor annoyances. Ansible playbooks are written in a domain specific language which makes logic complicated, it doesn&amp;rsquo;t scale very well, and can be tricky to debug. I believe network engineers can benefit greatly from learning 
+&lt;a href=&#34;https://nornir.readthedocs.io/en/latest/&#34; target = &#34;_blank&#34;&gt;&lt;strong&gt;Nornir&lt;/strong&gt;&lt;/a&gt;. Nornir is an automation framework that is functionally very similar to Ansible, but in pure python. Because it is pure python, it is much easier to debug and extend the functionality. It has threading built in and is highly scalable. In this post I&amp;rsquo;ll go over some basics of the Nornir framework and show the output classes that you will interact with when using it.&lt;/p&gt;
+&lt;h2 id=&#34;installation&#34;&gt;Installation&lt;/h2&gt;
+&lt;p&gt;Installation is very simple, use pip as follows and confirm you can import the package:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;$pip3 install nornir
+
+$python3
+&amp;gt;&amp;gt;&amp;gt;import nornir.core
+&amp;gt;&amp;gt;&amp;gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&#34;getting-started&#34;&gt;Getting Started&lt;/h2&gt;
+&lt;p&gt;The following was originally written on my github to teach coworkers about Nornir, I thought it would make a good post so I am copying it here with some minor changes. Check out my github
+&lt;a href=&#34;https://github.com/avreal/NetworkAutomationScenarios/tree/master/NornirBasics&#34; target = &#34;_blank&#34;&gt;&lt;strong&gt;repo&lt;/strong&gt;&lt;/a&gt;  to see the config file, hosts, and other Nornir scenarios. This isn&amp;rsquo;t meant to be a tutorial from scratch, I would recommend reading the 
+&lt;a href=&#34;https://nornir.readthedocs.io/en/latest/tutorials/intro/index.html&#34; target =&#34;_blank&#34;&gt;&lt;strong&gt;docs&lt;/strong&gt;&lt;/a&gt;  but this should serve as a good reference for interacting with Nornir objects and the results they generate.&lt;/p&gt;
+&lt;p&gt;First we instantiate the InitNornir class, here we can specify a config file or pass the contents as parameters. The config file specifies the location of my hosts, groups, and defaults files (among other parameters). We then use the run function to execute the task over the hosts in the inventory. In this case I am using get_facts from the NAPALM library.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; nornir &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; InitNornir
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; nornir.plugins.tasks.networking &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; napalm_get
+&lt;span style=&#34;color:#f92672&#34;&gt;from&lt;/span&gt; nornir.plugins.functions.text &lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; print_result
+&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; json
+
+nr &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; InitNornir(config_file&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;./config.yaml&amp;#34;&lt;/span&gt;)
+task_result &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; nr&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;run(task&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;napalm_get,getters&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;facts&amp;#34;&lt;/span&gt;])
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Lets look at the output of type() for these 2 items.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; type(nr)
+&lt;span style=&#34;color:#f92672&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span style=&#34;color:#66d9ef&#34;&gt;class&lt;/span&gt; &lt;span style=&#34;color:#960050;background-color:#1e0010&#34;&gt;&amp;#39;&lt;/span&gt;&lt;span style=&#34;color:#a6e22e&#34;&gt;nornir&lt;/span&gt;&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;core&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;Nornir&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; type(task_result)
+nornir&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;core&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;task&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;AggregatedResult
+&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;We will mostly be working with the AggregatedResult object, but there are some useful methods on the nornir.core.Nornir object shown below. These can be used to access the inventory dictionary generated during instantiation. I highly recommend exploring these methods further while experimenting with Nornir.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt;&amp;gt; type(nr.inventory)
+&amp;lt;class &#39;nornir.core.inventory.Inventory&#39;&amp;gt;
+
+&amp;gt;&amp;gt;&amp;gt; dir(nr.inventory)
+[&#39;__class__&#39;, &#39;__delattr__&#39;, &#39;__dir__&#39;, &#39;__doc__&#39;, &#39;__eq__&#39;, &#39;__format__&#39;, &#39;__ge__&#39;, 
+&#39;__getattribute__&#39;, &#39;__gt__&#39;, &#39;__hash__&#39;, &#39;__init__&#39;, &#39;__init_subclass__&#39;, &#39;__le__&#39;, 
+&#39;__len__&#39;, &#39;__lt__&#39;, &#39;__module__&#39;, &#39;__ne__&#39;, &#39;__new__&#39;, &#39;__reduce__&#39;, &#39;__reduce_ex__&#39;, 
+&#39;__repr__&#39;, &#39;__setattr__&#39;, &#39;__sizeof__&#39;, &#39;__slots__&#39;, &#39;__str__&#39;, &#39;__subclasshook__&#39;, 
+&#39;_update_group_refs&#39;, &#39;add_group&#39;, &#39;add_host&#39;, &#39;children_of_group&#39;, &#39;defaults&#39;, &#39;dict&#39;, 
+&#39;filter&#39;, &#39;get_defaults_dict&#39;, &#39;get_groups_dict&#39;, &#39;get_hosts_dict&#39;, &#39;get_inventory_dict&#39;, 
+&#39;groups&#39;, &#39;hosts&#39;]
+&amp;gt;&amp;gt;&amp;gt; 
+
+&amp;gt;&amp;gt;&amp;gt; nr.inventory.hosts
+{&#39;Router1&#39;: Host: Router1, &#39;Router2&#39;: Host: Router2, &#39;Router3&#39;: Host: Router3, &#39;Router4&#39;: Host: Router4}
+
+&amp;gt;&amp;gt;&amp;gt; nr.inventory.get_inventory_dict()
+{&#39;hosts&#39;: {&#39;Router1&#39;: {&#39;hostname&#39;: &#39;192.168.100.10&#39;, &#39;port&#39;: 22, &#39;username&#39;: None, &#39;password&#39;: None, &#39;platform&#39;: None, &#39;groups&#39;: [&#39;cisco_ios&#39;, &#39;r1r2&#39;], &#39;data&#39;: {}, &#39;connection_options&#39;: {}}, &#39;Router2&#39;: {&#39;hostname&#39;: &#39;192.168.100.20&#39;, &#39;port&#39;: 22, &#39;username&#39;: None, &#39;password&#39;: None, &#39;platform&#39;: None, &#39;groups&#39;: [&#39;cisco_ios&#39;, &#39;r1r2&#39;], &#39;data&#39;: {}, &#39;connection_options&#39;: {}}, &#39;Router3&#39;: {&#39;hostname&#39;: &#39;192.168.100.30&#39;, &#39;port&#39;: 22, &#39;username&#39;: None, &#39;password&#39;: None, &#39;platform&#39;: None, &#39;groups&#39;: [&#39;cisco_ios&#39;, &#39;r3r4&#39;], &#39;data&#39;: {}, &#39;connection_options&#39;: {}}, &#39;Router4&#39;: {&#39;hostname&#39;: &#39;192.168.100.40&#39;, &#39;port&#39;: 22, &#39;username&#39;: None, &#39;password&#39;: None, &#39;platform&#39;: None, &#39;groups&#39;: [&#39;cisco_ios&#39;, &#39;r3r4&#39;], &#39;data&#39;: {}, &#39;connection_options&#39;: {}}}, &#39;groups&#39;: {&#39;global&#39;: {&#39;hostname&#39;: None, &#39;port&#39;: None, &#39;username&#39;: None, &#39;password&#39;: None, &#39;platform&#39;: None, &#39;groups&#39;: [], &#39;data&#39;: {&#39;domain&#39;: &#39;global.local&#39;}, &#39;connection_options&#39;: {}}, &#39;r1r2&#39;: {&#39;hostname&#39;: None, &#39;port&#39;: None, &#39;username&#39;: None, &#39;password&#39;: None, &#39;platform&#39;: None, &#39;groups&#39;: [&#39;cisco_ios&#39;, &#39;global&#39;], &#39;data&#39;: {&#39;asn&#39;: 1}, &#39;connection_options&#39;: {}}, &#39;r3r4&#39;: {&#39;hostname&#39;: None, &#39;port&#39;: None, &#39;username&#39;: None, &#39;password&#39;: None, &#39;platform&#39;: None, &#39;groups&#39;: [&#39;cisco_ios&#39;, &#39;global&#39;], &#39;data&#39;: {&#39;asn&#39;: 1}, &#39;connection_options&#39;: {}}, &#39;cisco_ios&#39;: {&#39;hostname&#39;: None, &#39;port&#39;: None, &#39;username&#39;: None, &#39;password&#39;: None, &#39;platform&#39;: &#39;ios&#39;, &#39;groups&#39;: [], &#39;data&#39;: {}, &#39;connection_options&#39;: {}}}, &#39;defaults&#39;: {&#39;hostname&#39;: None, &#39;port&#39;: None, &#39;username&#39;: &#39;admin&#39;, &#39;password&#39;: &#39;admin&#39;, &#39;platform&#39;: None, &#39;data&#39;: {}, &#39;connection_options&#39;: {}}}
+&amp;gt;&amp;gt;&amp;gt; 
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Suppose we wish to grab certain keys/values from the task result output for a particular device, we can dig further into the AggregatedResult object that was returned from nr.run. First lets do a normal print(task_result):&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(task_result)
+AggregatedResult (napalm_get): {&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Router1&amp;#39;&lt;/span&gt;: MultiResult: [Result: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;napalm_get&amp;#34;&lt;/span&gt;], &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Router2&amp;#39;&lt;/span&gt;: MultiResult: [Result: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;napalm_get&amp;#34;&lt;/span&gt;], &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Router3&amp;#39;&lt;/span&gt;: MultiResult: [Result: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;napalm_get&amp;#34;&lt;/span&gt;], &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Router4&amp;#39;&lt;/span&gt;: MultiResult: [Result: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;napalm_get&amp;#34;&lt;/span&gt;]}
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Here we see that the AggregatedResult object is a dict-like object, we can access the individual MultiResult objects by doing task_result[&#39;&lt;em&gt;hostname&lt;/em&gt;&#39;].&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; task_result[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Router1&amp;#39;&lt;/span&gt;]
+MultiResult: [Result: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;napalm_get&amp;#34;&lt;/span&gt;]
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Now we have a list-like object, in order to extract data from this we can call the .result method as follows:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; task_result[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Router1&amp;#39;&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;result
+{&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;facts&amp;#39;&lt;/span&gt;: {&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;uptime&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;9600&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;vendor&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Cisco&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;os_version&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Linux Software (I86BI_LINUX-ADVENTERPRISEK9-M), Version 15.4(1)T, DEVELOPMENT TEST SOFTWARE&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;serial_number&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;2048001&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;model&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Unknown&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;hostname&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ABC-001-0001&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;fqdn&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ABC-001-0001.lab.com&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;interface_list&amp;#39;&lt;/span&gt;: [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet0/0&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet0/1&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet0/2&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet0/3&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet1/0&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet1/1&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet1/2&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Loopback0&amp;#39;&lt;/span&gt;]}}
+&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Now we have a standard dictionary whose data we can access by using its key(s). See below:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; output &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; task_result[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Router1&amp;#39;&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;result
+&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; output[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;facts&amp;#39;&lt;/span&gt;]
+{&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;uptime&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;9600&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;vendor&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Cisco&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;os_version&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Linux Software (I86BI_LINUX-ADVENTERPRISEK9-M), Version 15.4(1)T, DEVELOPMENT TEST SOFTWARE&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;serial_number&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;2048001&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;model&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Unknown&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;hostname&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ABC-001-0001&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;fqdn&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ABC-001-0001.lab.com&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;interface_list&amp;#39;&lt;/span&gt;: [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet0/0&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet0/1&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet0/2&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet0/3&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet1/0&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet1/1&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet1/2&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet1/3&amp;#39;&lt;/span&gt;,&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Loopback0&amp;#39;&lt;/span&gt;]}
+&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; output[&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;facts&amp;#39;&lt;/span&gt;][&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;uptime&amp;#39;&lt;/span&gt;]
+&lt;span style=&#34;color:#ae81ff&#34;&gt;9600&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;Given all of the above, we can now iterate through the Aggregated result object with a nested loop to generate an output with the device hostname and all of the data gathered in the MultiResult object. There are several ways to achieve a similar result.&lt;/p&gt;
+&lt;p&gt;In this first loop, we print out the hostname as a string then follow it with a nested dictionary where we can then access keys as needed.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; host &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; task_result:
+&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;     &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(host)
+&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;     &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; results &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; task_result[host]:
+&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;             &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(results)
+&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt; 
+Router1
+{&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;facts&amp;#39;&lt;/span&gt;: {&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;uptime&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;9600&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;vendor&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Cisco&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;os_version&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Linux Software (I86BI_LINUX-ADVENTERPRISEK9-M), Version 15.4(1)T, DEVELOPMENT TEST SOFTWARE&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;serial_number&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;2048001&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;model&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Unknown&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;hostname&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ABC-001-0001&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;fqdn&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ABC-001-0001.lab.com&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;interface_list&amp;#39;&lt;/span&gt;: [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet0/0&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet0/1&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet0/2&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet0/3&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet1/0&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet1/1&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet1/2&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet1/3&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Loopback0&amp;#39;&lt;/span&gt;]}}
+Router2
+
+&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;omitted&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;
+
+Router3
+
+&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;omitted&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;
+
+Router4
+
+&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;omitted&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;In this example, we use the items() method (recall that AggregatedResult is a dict-like object) and then iterate through the dict_items object we obtain. Since this contains tuples we use an index to access the objects.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; resultsitems &lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt; task_result&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;items()
+&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; hosts &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; resultsitems:
+&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;     &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(hosts[&lt;span style=&#34;color:#ae81ff&#34;&gt;0&lt;/span&gt;])
+&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;     &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(hosts[&lt;span style=&#34;color:#ae81ff&#34;&gt;1&lt;/span&gt;]&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;result)
+&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt; 
+Router1
+{&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;facts&amp;#39;&lt;/span&gt;: {&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;uptime&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;9600&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;vendor&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Cisco&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;os_version&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Linux Software (I86BI_LINUX-ADVENTERPRISEK9-M), Version 15.4(1)T, DEVELOPMENT TEST SOFTWARE&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;serial_number&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;2048001&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;model&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Unknown&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;hostname&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ABC-001-0001&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;fqdn&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ABC-001-0001.lab.com&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;interface_list&amp;#39;&lt;/span&gt;: [&lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet0/0&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet0/1&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet0/2&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet0/3&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet1/0&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet1/1&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet1/2&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet1/3&amp;#39;&lt;/span&gt;, &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Loopback0&amp;#39;&lt;/span&gt;]}}
+Router2
+
+&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;omitted&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;
+
+Router3
+
+&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;omitted&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;
+
+Router4
+
+&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;omitted&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;
+
+&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;In this example, we use a similar loop to the first example but format the output with json.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;import&lt;/span&gt; json
+
+&lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; hosts &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; task_result:
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(hosts)
+    &lt;span style=&#34;color:#66d9ef&#34;&gt;for&lt;/span&gt; results &lt;span style=&#34;color:#f92672&#34;&gt;in&lt;/span&gt; task_result[hosts]:
+        &lt;span style=&#34;color:#66d9ef&#34;&gt;print&lt;/span&gt;(json&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;dumps(results&lt;span style=&#34;color:#f92672&#34;&gt;.&lt;/span&gt;result, indent&lt;span style=&#34;color:#f92672&#34;&gt;=&lt;/span&gt;&lt;span style=&#34;color:#ae81ff&#34;&gt;4&lt;/span&gt;))  
+
+Router1
+{
+    &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;facts&amp;#34;&lt;/span&gt;: {
+        &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;uptime&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;9600&lt;/span&gt;,
+        &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;vendor&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Cisco&amp;#34;&lt;/span&gt;,
+        &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;os_version&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Linux Software (I86BI_LINUX-ADVENTERPRISEK9-M), Version 15.4(1)T, DEVELOPMENT TEST SOFTWARE&amp;#34;&lt;/span&gt;,
+        &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;serial_number&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;2048001&amp;#34;&lt;/span&gt;,
+        &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;model&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Unknown&amp;#34;&lt;/span&gt;,
+        &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;hostname&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;ABC-001-0001&amp;#34;&lt;/span&gt;,
+        &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;fqdn&amp;#34;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;ABC-001-0001.lab.com&amp;#34;&lt;/span&gt;,
+        &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;interface_list&amp;#34;&lt;/span&gt;: [
+            &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Ethernet0/0&amp;#34;&lt;/span&gt;,
+            &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Ethernet0/1&amp;#34;&lt;/span&gt;,
+            &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Ethernet0/2&amp;#34;&lt;/span&gt;,
+            &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Ethernet0/3&amp;#34;&lt;/span&gt;,
+            &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Ethernet1/0&amp;#34;&lt;/span&gt;,
+            &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Ethernet1/1&amp;#34;&lt;/span&gt;,
+            &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Ethernet1/2&amp;#34;&lt;/span&gt;,
+            &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Ethernet1/3&amp;#34;&lt;/span&gt;,
+            &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#34;Loopback0&amp;#34;&lt;/span&gt;
+        ]
+    }
+}
+Router2
+
+&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;omitted&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;
+
+Router3
+
+&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;omitted&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;
+
+Router4
+
+&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;omitted&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;
+
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;However nornir also includes a function for neatly printing the AggregatedResult, this is the print_result() function. This is great for configuration management and backup as it requires little effort to use but is very readable.&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre style=&#34;color:#f8f8f2;background-color:#272822;-moz-tab-size:4;-o-tab-size:4;tab-size:4&#34;&gt;&lt;code class=&#34;language-python&#34; data-lang=&#34;python&#34;&gt;&lt;span style=&#34;color:#f92672&#34;&gt;&amp;gt;&amp;gt;&amp;gt;&lt;/span&gt; print_result(task_result)
+napalm_get&lt;span style=&#34;color:#f92672&#34;&gt;**********************************************************************&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; Router1 &lt;span style=&#34;color:#f92672&#34;&gt;**&lt;/span&gt; changed : False &lt;span style=&#34;color:#f92672&#34;&gt;***************************************************&lt;/span&gt;
+vvvv napalm_get &lt;span style=&#34;color:#f92672&#34;&gt;**&lt;/span&gt; changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+{ &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;facts&amp;#39;&lt;/span&gt;: { &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;fqdn&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ABC-001-0001.lab.com&amp;#39;&lt;/span&gt;,
+             &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;hostname&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;ABC-001-0001&amp;#39;&lt;/span&gt;,
+             &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;interface_list&amp;#39;&lt;/span&gt;: [ &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet0/0&amp;#39;&lt;/span&gt;,
+                                 &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet0/1&amp;#39;&lt;/span&gt;,
+                                 &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet0/2&amp;#39;&lt;/span&gt;,
+                                 &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet0/3&amp;#39;&lt;/span&gt;,
+                                 &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet1/0&amp;#39;&lt;/span&gt;,
+                                 &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet1/1&amp;#39;&lt;/span&gt;,
+                                 &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet1/2&amp;#39;&lt;/span&gt;,
+                                 &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Ethernet1/3&amp;#39;&lt;/span&gt;,
+                                 &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Loopback0&amp;#39;&lt;/span&gt;],
+             &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;model&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Unknown&amp;#39;&lt;/span&gt;,
+             &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;os_version&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Linux Software (I86BI_LINUX-ADVENTERPRISEK9-M), &amp;#39;&lt;/span&gt;
+                           &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Version 15.4(1)T, DEVELOPMENT TEST SOFTWARE&amp;#39;&lt;/span&gt;,
+             &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;serial_number&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;2048001&amp;#39;&lt;/span&gt;,
+             &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;uptime&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#ae81ff&#34;&gt;9600&lt;/span&gt;,
+             &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;vendor&amp;#39;&lt;/span&gt;: &lt;span style=&#34;color:#e6db74&#34;&gt;&amp;#39;Cisco&amp;#39;&lt;/span&gt;}}
+&lt;span style=&#34;color:#f92672&#34;&gt;^^^^&lt;/span&gt; END napalm_get &lt;span style=&#34;color:#f92672&#34;&gt;^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; Router2 &lt;span style=&#34;color:#f92672&#34;&gt;**&lt;/span&gt; changed : False &lt;span style=&#34;color:#f92672&#34;&gt;***************************************************&lt;/span&gt;
+vvvv napalm_get &lt;span style=&#34;color:#f92672&#34;&gt;**&lt;/span&gt; changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+
+&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;omitted&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;
+
+&lt;span style=&#34;color:#f92672&#34;&gt;^^^^&lt;/span&gt; END napalm_get &lt;span style=&#34;color:#f92672&#34;&gt;^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; Router3 &lt;span style=&#34;color:#f92672&#34;&gt;**&lt;/span&gt; changed : False &lt;span style=&#34;color:#f92672&#34;&gt;***************************************************&lt;/span&gt;
+vvvv napalm_get &lt;span style=&#34;color:#f92672&#34;&gt;**&lt;/span&gt; changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+
+&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;omitted&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;
+
+&lt;span style=&#34;color:#f92672&#34;&gt;^^^^&lt;/span&gt; END napalm_get &lt;span style=&#34;color:#f92672&#34;&gt;^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&lt;/span&gt;
+&lt;span style=&#34;color:#f92672&#34;&gt;*&lt;/span&gt; Router4 &lt;span style=&#34;color:#f92672&#34;&gt;**&lt;/span&gt; changed : False &lt;span style=&#34;color:#f92672&#34;&gt;***************************************************&lt;/span&gt;
+vvvv napalm_get &lt;span style=&#34;color:#f92672&#34;&gt;**&lt;/span&gt; changed : False vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv INFO
+
+&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;omitted&lt;span style=&#34;color:#f92672&#34;&gt;...&lt;/span&gt;
+
+&lt;span style=&#34;color:#f92672&#34;&gt;^^^^&lt;/span&gt; END napalm_get &lt;span style=&#34;color:#f92672&#34;&gt;^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h1 id=&#34;conclusion&#34;&gt;Conclusion&lt;/h1&gt;
+&lt;p&gt;Nornir is an incredibly useful tool with tons of potential and this post barely scratches the surface of its capabilities. The value in using a tool like Nornir comes from what you can do with the data that is output from your tasks. The community isn&amp;rsquo;t very large yet but with time I believe Nornir can become a contender to Ansible for network engineers looking to automate in their environment. Future posts will go over more Nornir basics and a look at real world scenarios using Nornir.&lt;/p&gt;
+&lt;h3 id=&#34;further-reading-and-watching&#34;&gt;Further Reading and Watching&lt;/h3&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://readthedocs.org/projects/nornir/&#34; target = &#34;_blank&#34;&gt;&lt;strong&gt;Nornir ReadTheDocs&lt;/strong&gt;&lt;/a&gt;  &lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://github.com/nornir-automation/nornir&#34; target = &#34;_blank&#34;&gt;&lt;strong&gt;Nornir Repo&lt;/strong&gt;&lt;/a&gt;   &lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://www.youtube.com/watch?v=5SS5tTgacKg&#34; target = &#34;_blank&#34;&gt;&lt;strong&gt;Cisco Live Presentation&lt;/strong&gt;&lt;/a&gt;   &lt;!-- raw HTML omitted --&gt;&lt;/p&gt;
+&lt;p&gt;
+&lt;a href=&#34;https://www.youtube.com/watch?v=H7qs-jg6kVg&#34; target = &#34;_blank&#34;&gt;&lt;strong&gt;Dmitry Figol Nornir Livestream&lt;/strong&gt;&lt;/a&gt;   &lt;!-- raw HTML omitted --&gt;&lt;/p&gt;</description>
+     </item>
+   
+     <item>
        <title>Passing Certification Exams: AWS SAA and Beyond</title>
        <link>avillarreal.io/posts/awsexam/</link>
        <pubDate>Mon, 08 Jun 2020 10:39:51 -0700</pubDate>
