@@ -1,6 +1,6 @@
 ---
 title: "AWS/On-Prem Fortigate Site to Site VPN"
-date: 2020-05-09T10:39:51-07:00
+date: 2020-05-01T10:39:51-07:00
 draft: false
 urltitle: "awsfortigatevpn"
 showdate: true

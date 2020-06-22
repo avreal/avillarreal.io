@@ -1,7 +1,7 @@
 ---
 title: "An Introduction To Interacting With Nornir Output"
 urltitle: "intronornir"
-date: 2020-06-19T15:10:27-07:00
+date: 2020-06-22T15:10:27-07:00
 draft: false
 showdate: true
 ---

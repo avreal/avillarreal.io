@@ -1,7 +1,7 @@
 ---
 title: "VLAN Hopping Over Trunks: Why Native VLAN Mismatches Matter "
 urltitle: "nativevlan"
-date: 2020-04-05T11:06:53-07:00
+date: 2020-04-14T11:06:53-07:00
 draft: false
 showdate: true
 ---

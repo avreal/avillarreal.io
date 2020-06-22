@@ -1,7 +1,7 @@
 ---
 title: "OSPF Stub Area Types Part 1: Stub and Totally Stubby"
 urltitle: "ospfareatypes"
-date: 2020-03-28T20:15:03-07:00
+date: 2020-03-20T20:15:03-07:00
 draft: false
 showdate: true
 ---

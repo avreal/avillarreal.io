@@ -6,7 +6,7 @@
    <description>Recent content on Alan Villarreal</description>
    <generator>Hugo -- gohugo.io</generator>
    <copyright>Copyright &amp;copy; 2020 - Alan Villarreal</copyright>
-   <lastBuildDate>Fri, 19 Jun 2020 15:10:27 -0700</lastBuildDate>
+   <lastBuildDate>Mon, 22 Jun 2020 15:10:27 -0700</lastBuildDate>
    
        <atom:link href="avillarreal.io/index.xml" rel="self" type="application/rss+xml" />
    
@@ -14,7 +14,7 @@
      <item>
        <title>An Introduction To Interacting With Nornir Output</title>
        <link>avillarreal.io/posts/intronornir/</link>
-       <pubDate>Fri, 19 Jun 2020 15:10:27 -0700</pubDate>
+       <pubDate>Mon, 22 Jun 2020 15:10:27 -0700</pubDate>
        
        <guid>avillarreal.io/posts/intronornir/</guid>
        <description>&lt;p&gt;Over the past year I&amp;rsquo;ve taken an interest in network automation tools and how I can apply them to my work to make tasks easier. There are low level libraries such as 
@@ -265,7 +265,7 @@ vvvv napalm_get &lt;span style=&#34;color:#f92672&#34;&gt;**&lt;/span&gt; change
      <item>
        <title>AWS/On-Prem Fortigate Site to Site VPN</title>
        <link>avillarreal.io/posts/awsfortigatevpn/</link>
-       <pubDate>Sat, 09 May 2020 10:39:51 -0700</pubDate>
+       <pubDate>Fri, 01 May 2020 10:39:51 -0700</pubDate>
        
        <guid>avillarreal.io/posts/awsfortigatevpn/</guid>
        <description>&lt;!-- raw HTML omitted --&gt;
@@ -472,7 +472,7 @@ rtt min/avg/max/mdev = 11.688/11.772/11.850/0.066 ms
      <item>
        <title>VLAN Hopping Over Trunks: Why Native VLAN Mismatches Matter </title>
        <link>avillarreal.io/posts/nativevlan/</link>
-       <pubDate>Sun, 05 Apr 2020 11:06:53 -0700</pubDate>
+       <pubDate>Tue, 14 Apr 2020 11:06:53 -0700</pubDate>
        
        <guid>avillarreal.io/posts/nativevlan/</guid>
        <description>&lt;p&gt;When learning about VLANs and layer 2 segmentation, we are always told that the purpose of VLANs is to separate broadcast domains, and traffic from one VLAN can not go to the other VLAN unless specifically allowed. However there are situations in which traffic from one VLAN can leak across to another VLAN which is a massive security risk. In this post I will show an example of VLAN hopping in the case of a native VLAN mismatch, and discuss the native VLAN in general. Note that this is geared more towards Cisco IOS, as other vendors may not implement the native VLAN in their switches.&lt;/p&gt;
@@ -1093,7 +1093,7 @@ Link ID         ADV Router      Age         Seq#       Checksum Tag
      <item>
        <title>OSPF Stub Area Types Part 1: Stub and Totally Stubby</title>
        <link>avillarreal.io/posts/ospfareatypes/</link>
-       <pubDate>Sat, 28 Mar 2020 20:15:03 -0700</pubDate>
+       <pubDate>Fri, 20 Mar 2020 20:15:03 -0700</pubDate>
        
        <guid>avillarreal.io/posts/ospfareatypes/</guid>
        <description>&lt;p&gt;For up and coming network engineers and those studying for their CCNA and CCNP, OSPF can be quite a daunting routing protocol. It&amp;rsquo;s metric is much simpler than EIGRP, but the inner workings can be much more complex. Think LSAs, LSDBs, Dijkstra&amp;rsquo;s algorithm, etc. Adding to this, there are various configurations that allow for certain LSA types to be filtered at different points in the network and numerous other features. The focus of this post will be those area types (called stub areas) that give network engineers more granular control of the size of their router&amp;rsquo;s link state databases, which in turn eases resource consumption. I am assuming some familiarity with LSA types and basic OSPF concepts so I will not go over that in this discussion, however the effects of stub areas should be clear even without knowing LSAs. This post was inspired by Narbik Kocharians&amp;rsquo; &lt;a href=&#34;https://www.youtube.com/watch?v=cM3OI_ZyRuQ&#34;&gt;&lt;strong&gt;video&lt;/strong&gt;&lt;/a&gt; on the subject, which was instrumental for me in really understanding the concepts and use cases of these stub areas while studying for my CCNP ROUTE. I will demonstrate OSPF Stub Areas using a GNS3 lab and observing the changes in the routing tables/link state databases. I highly encourage everyone to follow along and lab this as well!&lt;/p&gt;
