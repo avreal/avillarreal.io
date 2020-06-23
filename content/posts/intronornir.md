@@ -1,5 +1,5 @@
 ---
-title: "An Introduction To Interacting With Nornir Output"
+title: "An Introduction To Working With Nornir Output"
 urltitle: "intronornir"
 date: 2020-06-22T15:10:27-07:00
 draft: false
